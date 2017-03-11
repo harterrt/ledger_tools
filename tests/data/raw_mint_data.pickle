@@ -1,0 +1,142 @@
+(lp0
+(dp1
+S'Category'
+p2
+S'Gift'
+p3
+sS'Description'
+p4
+S'Example Description'
+p5
+sS'Notes'
+p6
+S''
+p7
+sS'Labels'
+p8
+g7
+sS'Transaction Type'
+p9
+S'debit'
+p10
+sS'Amount'
+p11
+S'1250.00'
+p12
+sS'Account Name'
+p13
+S'CREDIT CARD'
+p14
+sS'Date'
+p15
+S'10/10/2016'
+p16
+sS'Original Description'
+p17
+S'FULL DESCRIPTION'
+p18
+sa(dp19
+g2
+S'Groceries'
+p20
+sg4
+S'Xxxxx Xxxxx'
+p21
+sg6
+g7
+sg8
+g7
+sg9
+S'debit'
+p22
+sg11
+S'1.68'
+p23
+sg13
+S'CREDIT CARD'
+p24
+sg15
+S'10/10/2016'
+p25
+sg17
+S'XXXXX-XXXXX #1234'
+p26
+sa(dp27
+g2
+S'Coffee Shops'
+p28
+sg4
+S'Xxxxxxxxxxx Xxxxxx'
+p29
+sg6
+g7
+sg8
+g7
+sg9
+S'debit'
+p30
+sg11
+S'2.00'
+p31
+sg13
+S'CREDIT CARD'
+p32
+sg15
+S'10/10/2016'
+p33
+sg17
+S'XX *XXXXXXXXXXX XXXXXX'
+p34
+sa(dp35
+g2
+S'Bank Fee'
+p36
+sg4
+S'Xxxxxxx Xxxxxxxxxxx Xxx'
+p37
+sg6
+g7
+sg8
+g7
+sg9
+S'debit'
+p38
+sg11
+S'5.00'
+p39
+sg13
+S'CHECKING'
+p40
+sg15
+S'4/07/2011'
+p41
+sg17
+S'XXXXXXX XXXXXXX XXX'
+p42
+sa(dp43
+g2
+S'Gas & Fuel'
+p44
+sg4
+S'Xxxxxx'
+p45
+sg6
+g7
+sg8
+g7
+sg9
+S'debit'
+p46
+sg11
+S'50.57'
+p47
+sg13
+S'CREDIT CARD'
+p48
+sg15
+S'4/08/2011'
+p49
+sg17
+S'XXXXXX 1231231231'
+p50
+sa.
