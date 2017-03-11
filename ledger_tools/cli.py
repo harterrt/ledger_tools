@@ -1,10 +1,15 @@
 import click
 
+@click.group()
+def cli():
+    pass
 
-@click.command()
-@click.option('--as-cowboy', '-c', is_flag=True, help='Greet as a cowboy.')
-@click.argument('name', default='world', required=False)
-def main(name, as_cowboy):
-    """{{ cookiecutter.project_short_description }}"""
-    greet = 'Howdy' if as_cowboy else 'Hello'
-    click.echo('{0}, {1}.'.format(greet, name))
+@cli.command()
+def pull_mint():
+    click.echo("Log into mint, then go to the following address:\n"
+        "https://wwws.mint.com/transactionDownload.event?queryNew=&offset=0&filterType=cash&comparableType=4"
+        "\n\n"
+        "Then copy the file to your working dir")
+
+if __name__ == "__main__":
+    cli()
