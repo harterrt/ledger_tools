@@ -1,18 +1,29 @@
 from csv import DictReader
+import logging
+import datetime
 
 
-def get_raw_data(path='~/Private/account_data/mint_transactions.csv'):
+def get_data(path='~/Private/account_data/mint_transactions.csv'):
     with open(path, 'r') as infile:
-        trans = [tt for tt in DictReader(infile)]
+        trans = [parse_transaction(tt) for tt in DictReader(infile)]
 
     return trans
 
-def parse_transaction(trans):
-    out = trans
-    out['date'] = datetime.datetime.strptime(trans['date'], '%m/%d/%Y')
-    out['amount'] = float(trans['amount'])
+def parse_transaction(tran):
+    """Clean headers and parse values"""
+    modifiers = {
+        'date': lambda dd: datetime.datetime.strptime(dd, '%m/%d/%Y').date(),
+        'amount': float
+    }
 
-    return out
+    def clean_field(field):
+        """Map key to lowercase and clean value if function specified"""
+        key = field[0].lower()
+        value = modifiers.get(key, lambda x: x)(field[1])
+        
+        return key, value
+
+    return dict(map(clean_field, tran.items()))
 
 def filter_pending_trans(trans_list):
     """Remove pending transactions, since their amount may still change
@@ -23,7 +34,7 @@ def filter_pending_trans(trans_list):
     """
     # Get next transaction - current transaction for every transaction
     # except last
-    dates = map(lambda xx: xx['date'], trans_list)
+    dates = list(map(lambda xx: xx['date'], trans_list))
     date_delta = map(lambda xx: xx[0] - xx[1], zip(dates[1:], dates[:-1]))
 
     # Find the big gap, if it exists

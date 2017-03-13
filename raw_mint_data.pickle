@@ -1,0 +1,190 @@
+(lp0
+(dp1
+S'category'
+p2
+S'Gift'
+p3
+sS'description'
+p4
+S'Example Description'
+p5
+sS'notes'
+p6
+S''
+p7
+sS'labels'
+p8
+g7
+sS'transaction type'
+p9
+S'debit'
+p10
+sS'amount'
+p11
+F1250.0
+sS'account name'
+p12
+S'CREDIT CARD'
+p13
+sS'date'
+p14
+cdatetime
+date
+p15
+(S'\x07\xe0\n\n'
+p16
+tp17
+Rp18
+sS'original description'
+p19
+S'FULL DESCRIPTION'
+p20
+sa(dp21
+S'category'
+p22
+S'Groceries'
+p23
+sS'description'
+p24
+S'Xxxxx Xxxxx'
+p25
+sS'notes'
+p26
+g7
+sS'labels'
+p27
+g7
+sS'transaction type'
+p28
+S'debit'
+p29
+sS'amount'
+p30
+F1.68
+sS'account name'
+p31
+S'CREDIT CARD'
+p32
+sS'date'
+p33
+g15
+(S'\x07\xe0\n\n'
+p34
+tp35
+Rp36
+sS'original description'
+p37
+S'XXXXX-XXXXX #1234'
+p38
+sa(dp39
+S'category'
+p40
+S'Coffee Shops'
+p41
+sS'description'
+p42
+S'Xxxxxxxxxxx Xxxxxx'
+p43
+sS'notes'
+p44
+g7
+sS'labels'
+p45
+g7
+sS'transaction type'
+p46
+S'debit'
+p47
+sS'amount'
+p48
+F2.0
+sS'account name'
+p49
+S'CREDIT CARD'
+p50
+sS'date'
+p51
+g15
+(S'\x07\xe0\n\n'
+p52
+tp53
+Rp54
+sS'original description'
+p55
+S'XX *XXXXXXXXXXX XXXXXX'
+p56
+sa(dp57
+S'category'
+p58
+S'Bank Fee'
+p59
+sS'description'
+p60
+S'Xxxxxxx Xxxxxxxxxxx Xxx'
+p61
+sS'notes'
+p62
+g7
+sS'labels'
+p63
+g7
+sS'transaction type'
+p64
+S'debit'
+p65
+sS'amount'
+p66
+F5.0
+sS'account name'
+p67
+S'CHECKING'
+p68
+sS'date'
+p69
+g15
+(S'\x07\xdb\x04\x07'
+p70
+tp71
+Rp72
+sS'original description'
+p73
+S'XXXXXXX XXXXXXX XXX'
+p74
+sa(dp75
+S'category'
+p76
+S'Gas & Fuel'
+p77
+sS'description'
+p78
+S'Xxxxxx'
+p79
+sS'notes'
+p80
+g7
+sS'labels'
+p81
+g7
+sS'transaction type'
+p82
+S'debit'
+p83
+sS'amount'
+p84
+F50.57
+sS'account name'
+p85
+S'CREDIT CARD'
+p86
+sS'date'
+p87
+g15
+(S'\x07\xdb\x04\x08'
+p88
+tp89
+Rp90
+sS'original description'
+p91
+S'XXXXXX 1231231231'
+p92
+sa.
