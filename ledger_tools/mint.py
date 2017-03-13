@@ -38,8 +38,8 @@ def filter_pending_trans(trans_list):
     date_delta = map(lambda xx: xx[0] - xx[1], zip(dates[1:], dates[:-1]))
 
     # Find the big gap, if it exists
-    year_gap = map(lambda xx: xx < datetime.timedelta(-1, 0, 0),
-                   date_delta)
+    year_gap = list(map(lambda xx: xx < datetime.timedelta(-1, 0, 0),
+                        date_delta))
     if (sum(year_gap) > 1):
         logging.error("There are %d pending transaction breakpoints, " + 
                       "when there should be no more than one.", 
@@ -52,5 +52,6 @@ def filter_pending_trans(trans_list):
         critical_point = year_gap.index(True) + 1
         logging.info("%d pending transactions removed.", critical_point)
 
+    print(critical_point)
     return trans_list[critical_point:]
 
