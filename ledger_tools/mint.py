@@ -60,6 +60,13 @@ def filter_pending_trans(trans_list):
     return trans_list[critical_point:]
 
 
+def render_new_trans(mint_file, ledger_file):
+    mint_trans = filter_pending_trans(get_data(mint_file))
+    ledger_trans = read_ledger_trans(ledger_file)
+
+    return render(diff(mint_trans, ledger_trans))
+
+
 def __pickle__(obj, path):
     with open(path, 'wb') as outfile:
         pickle.dump(obj, outfile)
