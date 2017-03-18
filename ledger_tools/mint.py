@@ -11,6 +11,7 @@ def get_data(path='~/Private/account_data/mint_transactions.csv'):
 
     return trans
 
+
 def parse_transaction(tran):
     """Clean headers and parse values"""
 
@@ -23,18 +24,15 @@ def parse_transaction(tran):
         """Map key to lowercase and clean value if function specified"""
         key = field[0].lower()
         value = modifiers.get(key, lambda x: x)(field[1])
-        
+
         return key, value
 
     return dict(map(clean_field, tran.items()))
 
-def tail(iterable):
-    iterable.__next__()
-    return iterable
 
 def filter_pending_trans(trans_list):
     """Remove pending transactions, since their amount may still change
-    
+
     We pull data in ascending date format, but pending transactions are always
     at the top of the CSV file. Accordingly, we just need to remove all trans
     that are not in ascending order.
@@ -48,10 +46,10 @@ def filter_pending_trans(trans_list):
     year_gap = [xx < datetime.timedelta(-1, 0, 0) for xx in date_delta]
 
     if (sum(year_gap) > 1):
-        logging.error("There are %d pending transaction breakpoints, " + 
-                      "when there should be no more than one.", 
+        logging.error("There are %d pending transaction breakpoints, " +
+                      "when there should be no more than one.",
                       sum(year_gap))
-        raise PendingTransactionException("More than one pending breakpoints")
+        raise Exception("More than one pending breakpoints")
     elif (sum(year_gap) == 0):
         logging.info("No pending transactions found.")
         critical_point = 0
@@ -61,7 +59,7 @@ def filter_pending_trans(trans_list):
 
     return trans_list[critical_point:]
 
+
 def __pickle__(obj, path):
     with open(path, 'wb') as outfile:
         pickle.dump(obj, outfile)
-
