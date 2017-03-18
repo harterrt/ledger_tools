@@ -2,6 +2,8 @@ from csv import DictReader
 import logging
 import datetime
 
+import pickle
+
 
 def get_data(path='~/Private/account_data/mint_transactions.csv'):
     with open(path, 'r') as infile:
@@ -11,6 +13,7 @@ def get_data(path='~/Private/account_data/mint_transactions.csv'):
 
 def parse_transaction(tran):
     """Clean headers and parse values"""
+
     modifiers = {
         'date': lambda dd: datetime.datetime.strptime(dd, '%m/%d/%Y').date(),
         'amount': float
@@ -25,6 +28,10 @@ def parse_transaction(tran):
 
     return dict(map(clean_field, tran.items()))
 
+def tail(iterable):
+    iterable.__next__()
+    return iterable
+
 def filter_pending_trans(trans_list):
     """Remove pending transactions, since their amount may still change
     
@@ -34,12 +41,12 @@ def filter_pending_trans(trans_list):
     """
     # Get next transaction - current transaction for every transaction
     # except last
-    dates = list(map(lambda xx: xx['date'], trans_list))
-    date_delta = map(lambda xx: xx[0] - xx[1], zip(dates[1:], dates[:-1]))
+    dates = [xx['date'] for xx in trans_list]
+    date_delta = [xx[0] - xx[1] for xx in zip(dates[1:], dates)]
 
     # Find the big gap, if it exists
-    year_gap = list(map(lambda xx: xx < datetime.timedelta(-1, 0, 0),
-                        date_delta))
+    year_gap = [xx < datetime.timedelta(-1, 0, 0) for xx in date_delta]
+
     if (sum(year_gap) > 1):
         logging.error("There are %d pending transaction breakpoints, " + 
                       "when there should be no more than one.", 
@@ -52,6 +59,9 @@ def filter_pending_trans(trans_list):
         critical_point = year_gap.index(True) + 1
         logging.info("%d pending transactions removed.", critical_point)
 
-    print(critical_point)
     return trans_list[critical_point:]
+
+def __pickle__(obj, path):
+    with open(path, 'wb') as outfile:
+        pickle.dump(obj, outfile)
 

@@ -7,4 +7,7 @@
     The ledger library can only be invoked with `ledger python ...`
     so you'll need to write that python as a stand alone script.
     what a PITA.
+    * Still, it's nice to be 3.5 and 2.7 compatible. This is a learning project
+      after all.
+    * Abandoning 2.7 support - pickle does not play well between versions.
 * Figure out how to export ledger transactions in a reliable and readable format
