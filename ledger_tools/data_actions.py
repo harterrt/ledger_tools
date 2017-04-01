@@ -21,7 +21,7 @@ def key_mint_tran(mint_tran):
         TransactionKey(
             mint_tran['date'],
             mint_tran['amount'],
-            mint_tran['original description']
+            mint_tran['description']
         ),
         mint_tran
     )
@@ -35,8 +35,13 @@ def simplify_ledger_tran(ledger_tran):
     )
 
 
-def is_recorded(keyed_mint_tran, ledger_trans):
-    return keyed_mint_tran[0] in ledger_trans
+def is_recorded(keyed_mint_tran, simple_ledger_trans):
+    print(keyed_mint_tran[0])
+    print(simple_ledger_trans)
+    print(keyed_mint_tran[0] in simple_ledger_trans)
+    print('-'*80)
+
+    return keyed_mint_tran[0] in simple_ledger_trans
 
 
 def trans_filter(ledger_trans):
@@ -44,12 +49,15 @@ def trans_filter(ledger_trans):
     
     This implementation is naive, but this format makes it easy to refactor
     to a statistical filter if we have performance issues"""
-    simple_ledger_trans = map(simplify_ledger_tran, ledger_trans)
-    return lambda mint_tran: is_recorded(mint_tran, simple_ledger_trans)
-
+    simple_ledger_trans = list(map(simplify_ledger_tran, ledger_trans))
+    return lambda mint_tran: not is_recorded(mint_tran, simple_ledger_trans)
 
 
 def find_new(mint_trans, ledger_trans):
     """Finds mint trans not yet included in a list of ledger trans"""
     keyed_trans = map(key_mint_tran, mint_trans)
     new_trans = filter(trans_filter(ledger_trans), keyed_trans)
+
+    return list(map(lambda x: x[1], new_trans))
+
+

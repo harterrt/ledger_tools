@@ -13,7 +13,7 @@ def test_parse_trans():
                                      'amount': '10.00',
                                      'other': 'stays the same'})
     expected = {'date': datetime.date(2017, 1, 1),
-                'amount': 10.00,
+                'amount': '10.00',
                 'other': 'stays the same'}
 
     assert actual == expected

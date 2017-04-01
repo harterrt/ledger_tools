@@ -17,7 +17,6 @@ def parse_transaction(tran):
 
     modifiers = {
         'date': lambda dd: datetime.datetime.strptime(dd, '%m/%d/%Y').date(),
-        'amount': float
     }
 
     def clean_field(field):
@@ -60,11 +59,8 @@ def filter_pending_trans(trans_list):
     return trans_list[critical_point:]
 
 
-def render_new_trans(mint_file, ledger_file):
-    mint_trans = filter_pending_trans(get_data(mint_file))
-    ledger_trans = read_ledger_trans(ledger_file)
-
-    return render(diff(mint_trans, ledger_trans))
+def get_transactions(mint_file):
+    return filter_pending_trans(get_data(mint_file))
 
 
 def __pickle__(obj, path):
