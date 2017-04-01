@@ -1,15 +1,11 @@
 import pickle
 import datetime
 from ledger_tools import mint
+from .utils import *
 
 test_mint_data = 'tests/data/example_mint_transactions.csv'
 parsed_data = 'tests/data/parsed_mint_data.pickle'
 pend_trans_removed_data = 'tests/data/pending_trans_removed.pickle'
-
-
-def load_data(path):
-    with open(path, 'rb') as infile:
-        return pickle.load(infile)
 
 
 def test_parse_trans():

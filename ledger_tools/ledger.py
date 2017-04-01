@@ -1,9 +1,10 @@
 from subprocess import check_output
+import datetime
 from io import StringIO
 import csv
 
 def ledger_to_csv(path):
-    return check_output(['ledger', '-f', ledger_path, 'csv'])
+    return check_output(['ledger', '-f', path, 'csv'])
 
 def get_transactions(ledger_path):
     # TODO: Make this more testable
@@ -16,4 +17,22 @@ def get_transactions(ledger_path):
 
 
 def parse_transaction(tran):
-    pass
+    headers = [
+        'date',
+        'unknown',
+        'payee',
+        'category',
+        'unit',
+        'amount',
+        'pending',
+        'notes',
+    ]
+    trans_dict = dict(zip(headers, tran))
+
+    modifiers = {
+        'date': lambda dd: datetime.datetime.strptime(dd, "%Y/%m/%d").date(),
+    }
+    return {k: modifiers.get(k, lambda x: x)(v)
+            for (k, v)
+            in trans_dict.items()}
+

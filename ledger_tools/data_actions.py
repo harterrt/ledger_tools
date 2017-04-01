@@ -1,5 +1,4 @@
-import mint
-import ledger
+from ledger_tools import mint, ledger
 
 
 def render_new_trans(mint_file, ledger_file):
