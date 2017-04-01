@@ -1,5 +1,10 @@
 # TODO
 
+* Make amount comparison work reliably
+  * ledger drops .00 in amounts
+* How can we account for debit/credit transactions?
+
+# Done
 * Get tests to pass on 2.7 
   * something seems to be wrong with the pickling 
     there's a flag you should set
@@ -11,3 +16,4 @@
       after all.
     * Abandoning 2.7 support - pickle does not play well between versions.
 * Figure out how to export ledger transactions in a reliable and readable format
+  * Done
