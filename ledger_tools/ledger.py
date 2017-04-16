@@ -30,7 +30,8 @@ def parse_transaction(tran):
     trans_dict = dict(zip(headers, tran))
 
     modifiers = {
-        'date': lambda dd: datetime.datetime.strptime(dd, "%Y/%m/%d").date(),
+        'date': lambda x: datetime.datetime.strptime(x, "%Y/%m/%d").date(),
+        'amount': lambda x: "{:0.2f}".format(float(x))
     }
     return {k: modifiers.get(k, lambda x: x)(v)
             for (k, v)

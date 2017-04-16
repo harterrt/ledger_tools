@@ -36,11 +36,6 @@ def simplify_ledger_tran(ledger_tran):
 
 
 def is_recorded(keyed_mint_tran, simple_ledger_trans):
-    print(keyed_mint_tran[0])
-    print(simple_ledger_trans)
-    print(keyed_mint_tran[0] in simple_ledger_trans)
-    print('-'*80)
-
     return keyed_mint_tran[0] in simple_ledger_trans
 
 

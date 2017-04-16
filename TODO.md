@@ -1,8 +1,7 @@
 # TODO
 
-* Make amount comparison work reliably
-  * ledger drops .00 in amounts
 * How can we account for debit/credit transactions?
+* Make tests more readable - don't rely on pickled output
 
 # Done
 * Get tests to pass on 2.7 
@@ -17,3 +16,5 @@
     * Abandoning 2.7 support - pickle does not play well between versions.
 * Figure out how to export ledger transactions in a reliable and readable format
   * Done
+* Make amount comparison work reliably
+  * ledger drops .00 in amounts
