@@ -31,6 +31,9 @@ def parse_transaction(tran):
 
     modifiers = {
         'date': lambda x: datetime.datetime.strptime(x, "%Y/%m/%d").date(),
+        # TODO: maybe use a named tuple with dollars and cents?
+        #       better than a int of cents, since you won't forget to render
+        #       later
         'amount': lambda x: "{:0.2f}".format(float(x))
     }
     return {k: modifiers.get(k, lambda x: x)(v)
