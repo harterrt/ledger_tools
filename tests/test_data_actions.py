@@ -6,7 +6,6 @@ def test_find_new():
     ledger_trans = ledger.get_transactions('tests/data/example.ledger')
 
     new = data_actions.find_new(mint_trans, ledger_trans)
-    print(new)
 
-    assert new == []
+    assert new == load_data('tests/data/new_transactions.pickle')
 
