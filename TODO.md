@@ -1,7 +1,14 @@
 # TODO
 
-* How can we account for debit/credit transactions?
 * Make tests more readable - don't rely on pickled output
+* Test new transaction reader on full data
+  * Do we see a lot of false positive trnasctions? Add tests
+  * How can we account for debit/credit transactions?
+* Create a render to ledger function
+* Start on categorization tool
+  * Can you move tests to a subfolder?
+    * split data actions and categorization?
+  * Review physical notes
 
 # Done
 * Get tests to pass on 2.7 
