@@ -1,5 +1,5 @@
 from collections import namedtuple
-#from ledger_tools import mint, ledger
+from ledger_tools import mint, ledger
 
 
 def render_new_trans(mint_file, ledger_file):
@@ -54,5 +54,10 @@ def find_new(mint_trans, ledger_trans):
     new_trans = filter(trans_filter(ledger_trans), keyed_trans)
 
     return list(map(lambda x: x[1], new_trans))
+
+
+def new_trans_from_path(mint_path, ledger_path):
+    return find_new(mint.get_transactions(mint_path),
+                    ledger.get_transactions(ledger_path))
 
 

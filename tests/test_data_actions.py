@@ -9,3 +9,10 @@ def test_find_new():
 
     assert new == load_data('tests/data/new_transactions.pickle')
 
+
+def test_new_trans_from_path():
+    new = data_actions.new_trans_from_path(test_mint_data,
+                                           'tests/data/example.ledger')
+
+    assert new == load_data('tests/data/new_transactions.pickle')
+
