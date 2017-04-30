@@ -1,5 +1,5 @@
 import click
-from ledger_tools import data_actions
+from . import data_actions
 import pickle
 
 
@@ -16,6 +16,7 @@ def pull_mint():
                "\n\n"
                "Then copy the file to your working dir")
 
+
 @cli.command()
 @click.option('--mint', default='~/Downloads/transactions.csv',
               help='Path to mint transaction data.')
@@ -25,7 +26,7 @@ def dump_new_trans(mint, ledger, out):
     new = data_actions.new_trans_from_paths(mint, ledger)
 
     with open(out, 'wb') as outfile:
-        pickle.dump(new, out)
+        pickle.dump(new, outfile)
 
 
 if __name__ == "__main__":

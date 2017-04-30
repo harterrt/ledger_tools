@@ -1,5 +1,7 @@
-from ledger_tools import data_actions, mint, ledger
-from .test_mint import *
+from ledgertools import data_actions, mint, ledger
+from .utils import load_data
+from .test_mint import test_mint_data
+
 
 def test_find_new():
     mint_trans = mint.get_transactions(test_mint_data)
@@ -15,4 +17,3 @@ def test_new_trans_from_path():
                                            'tests/data/example.ledger')
 
     assert new == load_data('tests/data/new_transactions.pickle')
-

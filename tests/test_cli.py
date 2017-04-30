@@ -1,6 +1,6 @@
 import pytest
 from click.testing import CliRunner
-from ledger_tools import cli
+from ledgertools import cli
 
 
 @pytest.fixture
