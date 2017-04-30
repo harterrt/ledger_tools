@@ -1,7 +1,7 @@
-import pickle
 import datetime
-from ledger_tools import mint
-from .utils import *
+from ledgertools import mint
+from .utils import load_data
+
 
 test_mint_data = 'tests/data/example_mint_transactions.csv'
 parsed_data = 'tests/data/parsed_mint_data.pickle'

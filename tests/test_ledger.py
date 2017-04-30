@@ -1,5 +1,6 @@
-from ledger_tools import ledger
-from .utils import *
+from ledgertools import ledger
+from .utils import load_data
+
 
 def test_get_transactions():
     actual = ledger.get_transactions('tests/data/example.ledger')
