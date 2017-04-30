@@ -2,8 +2,6 @@ from csv import DictReader
 import logging
 import datetime
 
-import pickle
-
 
 def get_data(path='~/Private/account_data/mint_transactions.csv'):
     with open(path, 'r') as infile:
@@ -61,8 +59,3 @@ def filter_pending_trans(trans_list):
 
 def get_transactions(mint_file):
     return filter_pending_trans(get_data(mint_file))
-
-
-def __pickle__(obj, path):
-    with open(path, 'wb') as outfile:
-        pickle.dump(obj, outfile)
