@@ -3,8 +3,10 @@ import datetime
 from io import StringIO
 import csv
 
+
 def ledger_to_csv(path):
     return check_output(['ledger', '-f', path, 'csv'])
+
 
 def get_transactions(ledger_path):
     # TODO: Make this more testable
@@ -39,4 +41,3 @@ def parse_transaction(tran):
     return {k: modifiers.get(k, lambda x: x)(v)
             for (k, v)
             in trans_dict.items()}
-

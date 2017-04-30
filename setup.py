@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 dependencies = ['click']
 
 setup(
-    name='ledger_tools',
+    name='ledgertools',
     version='0.1',
     author='Ryan Harter (:harterrt)',
     author_email='harterrt@gmail.com',
