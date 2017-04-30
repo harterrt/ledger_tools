@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-dependencies = ['click']
+dependencies = ['click', 'PyFunctional', 'pick']
 
 setup(
     name='ledgertools',

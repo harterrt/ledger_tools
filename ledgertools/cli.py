@@ -31,5 +31,14 @@ def dump_new_trans(mint, ledger, out):
         pickle.dump(new, outfile)
 
 
+@cli.command()
+@click.option('--new-trans',
+              help='Path to new transactions, as created by `dump_new_trans`')
+@click.option('--out-dir',
+              help='Path to save resulting ledger transactions')
+def categorize(new_trans, out_dir):
+    pass
+
+
 if __name__ == "__main__":
     cli()
