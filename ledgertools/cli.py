@@ -18,12 +18,14 @@ def pull_mint():
 
 
 @cli.command()
-@click.option('--mint', default='~/Downloads/transactions.csv',
-              help='Path to mint transaction data.')
-@click.option('--ledger', help='Path to current ledger file.')
-@click.option('--out', help='Path to save the new tranasactions.')
+@click.option('--mint', help='Path to mint transaction data.',
+              type=click.Path(exists=True), required=True)
+@click.option('--ledger', help='Path to current ledger file.',
+              type=click.Path(exists=True), required=True)
+@click.option('--out', help='Path to save the new tranasactions.',
+              type=click.Path(), required=True)
 def dump_new_trans(mint, ledger, out):
-    new = data_actions.new_trans_from_paths(mint, ledger)
+    new = data_actions.new_trans_from_path(mint, ledger)
 
     with open(out, 'wb') as outfile:
         pickle.dump(new, outfile)
