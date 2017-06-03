@@ -29,47 +29,55 @@ def pickle_dump(path, obj):
         pickle.dump(obj, outfile)
 
 
-def run_categorize(ledger_path, new_transactions, user_input, runner):
+def run_categorize(new_transactions, ledger_path, user_input, runner):
     with open(ledger_path) as infile:
         ledger_text = infile.read()
 
     with runner.isolated_filesystem():
         new_trans_path = 'new_trans.pickle'
+        existing_ledger_path = 'existing.ledger'
         new_ledger_path = 'new_trans.ledger'
 
-        # Save new trans to temp filesystem
+        # Save new trans and ledger file to temp filesystem
         pickle_dump(new_trans_path, new_transactions)
-
-        with open('categorize.ledger', 'w') as tmpfile:
+        with open(existing_ledger_path, 'w') as tmpfile:
             tmpfile.write(ledger_text)
 
-        runner.invoke(cli.categorize, [
+        result = runner.invoke(cli.categorize, [
             '--new-trans',
             new_trans_path,
-            '--out-file',
+            '--ledger-path',
+            existing_ledger_path,
+            '--out-path',
             new_ledger_path,
         ], input=user_input)
+
+        print(result.exit_code)
+        print(result.output)
+        print(len(result.output))
 
         CatFiles = namedtuple(
             'cat_files',
             ['new_trans', 'ledger_trans'],
         )
 
-        return CatFiles(load(new_trans_path), load(new_ledger_path))
+        out = CatFiles(load(new_trans_path), load(new_ledger_path))
+
+    return out
 
 
 def test_cat_abort(runner):
-    cat_files = run_categorize('tests/data/categorize.ledger',
-                               nt.many_new_transactions, '^C', runner)
+    cat_files = run_categorize(nt.many_new_transactions,
+                               'tests/data/categorize.ledger', '^C', runner)
 
     assert cat_files.ledger_trans is None
     assert cat_files.new_trans == nt.many_new_transactions
 
 
 # This currently fails, because categorize does nothing
-# def test_single_cat(runner):
-#     cat_files = run_categorize('tests/data/categorize.ledger',
-#                                nt.many_new_transactions, '\n^C', runner)
-#
-#     assert cat_files.ledger_trans != None
-#     assert cat_files.new_trans == nt.many_new_transactions[1:]
+def test_single_cat(runner):
+    cat_files = run_categorize(nt.many_new_transactions,
+                               'tests/data/categorize.ledger', '\n^C', runner)
+
+    assert cat_files.ledger_trans != None
+    assert cat_files.new_trans == nt.many_new_transactions[1:]
