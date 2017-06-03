@@ -1,5 +1,6 @@
 import click
 from . import data_actions
+from . import categorize as cat
 import pickle
 
 
@@ -34,10 +35,13 @@ def dump_new_trans(mint, ledger, out):
 @cli.command()
 @click.option('--new-trans',
               help='Path to new transactions, as created by `dump_new_trans`')
-@click.option('--out-dir',
+@click.option('--ledger-path',
               help='Path to save resulting ledger transactions')
-def categorize(new_trans, out_dir):
-    pass
+@click.option('--out-path',
+              help='Path to save resulting ledger transactions')
+def categorize(new_trans, ledger_path, out_path):
+    print('here we are')
+    cat.run_categorization(new_trans, ledger_path, out_path)
 
 
 if __name__ == "__main__":
