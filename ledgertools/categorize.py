@@ -1,6 +1,7 @@
 from functional import seq
 from collections import Counter
 from pick import pick
+import pickle
 import textwrap
 from . import ledger
 
@@ -12,7 +13,7 @@ def run_categorization(trans_path):
     categorize(trans.pop())
 
     with open(trans_path, 'w') as outfile:
-        pickle.dump(trans.outfile)
+        pickle.dump(trans, outfile)
 
 
 def get_category_frequencies(ledger_path):
@@ -20,7 +21,7 @@ def get_category_frequencies(ledger_path):
         .map(lambda x: Counter([x['category']]))\
         .reduce(lambda x, y: x + y)\
         .most_common()
-    
+
 
 def categorize(transaction, ledger_path):
     title = textwrap.dedent("""\

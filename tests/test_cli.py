@@ -29,7 +29,7 @@ def test_categorize(runner):
         with open('categorize.ledger', 'w') as tmpfile:
             tmpfile.write(ledger_text)
 
-        result = runner.invoke(cli.categorize, [
+        runner.invoke(cli.categorize, [
             '--new-trans',
             'new_trans.pickle',
             '--out-file',
