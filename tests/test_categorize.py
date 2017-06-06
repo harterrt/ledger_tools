@@ -3,6 +3,7 @@ import click
 from click import _termui_impl
 from click.testing import CliRunner
 from ledgertools import cli
+from ledgertools.categorize import to_ledger_format
 from .data import new_transactions as nt
 import pickle
 from collections import namedtuple
@@ -101,12 +102,13 @@ def test_cat_abort(runner, monkeypatch):
     assert cat_files.new_trans == nt.many_new_transactions
 
 
-# This currently fails, because categorize does nothing
 def test_single_cat(runner, monkeypatch):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
-                               '\n' + KB_INTERRUPT, runner, monkeypatch)
+                               'j\n' + KB_INTERRUPT, runner, monkeypatch)
 
-    assert cat_files.ledger_trans is not None
-    assert cat_files.ledger_trans != ''
+    assert to_ledger_format(
+        nt.many_new_transactions[-1],
+        'Expenses:Food:Eating Out'
+    ) in cat_files.ledger_trans
     assert cat_files.new_trans == nt.many_new_transactions[:-1]
