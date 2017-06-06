@@ -4,8 +4,7 @@ import datetime
 
 TransactionBase = namedtuple(
     'TransactionBase', 
-    ['account_name', 'amount', 'category', 'date', 'description', 'labels',
-     'notes', 'original_description', 'transaction_type']
+    ['date', 'payee', 'notes', 'category', 'amount', 'labels']
 )
 
 
@@ -31,18 +30,14 @@ class Transaction(TransactionBase):
 
     @classmethod
     def from_ledger(cls, ledger_tran):
-        pass
-        #return super().__init__(
-        #    account_name = mint_tran['account name'],
-        #    amount = mint_trans['amount'],
-        #    category = mint_tran['category'],
-        #    date = mint_tran['date'],
-        #    description = mint_tran['description'],
-        #    labels = mint_tran['labels'],
-        #    notes = mint_tran['notes'],
-        #    original_description = mint_tran['original description'],
-        #    transaction_type = mint_tran['transaction type']
-        #)
+        return cls(
+            date = ledger_tran['date'],
+            payee = ledger_tran['payee'],
+            notes = ledger_tran['notes'],
+            category = ledger_tran['category'],
+            amount = ledger_tran['amount'],
+            unit = ledger_tran['labels'],
+        )
 
     def get_keyed_tran(self):
         return ((self.date, self.amount, self.description), self)
