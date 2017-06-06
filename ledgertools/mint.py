@@ -1,11 +1,12 @@
 from csv import DictReader
+from .transaction import Transaction
 import logging
 import datetime
 
 
 def get_data(path='~/Private/account_data/mint_transactions.csv'):
     with open(path, 'r') as infile:
-        trans = [parse_transaction(tt) for tt in DictReader(infile)]
+        trans = [Transaction.from_mint(tt) for tt in DictReader(infile)]
 
     return trans
 
@@ -36,7 +37,7 @@ def filter_pending_trans(trans_list):
     """
     # Get next transaction - current transaction for every transaction
     # except last
-    dates = [xx['date'] for xx in trans_list]
+    dates = [xx.date for xx in trans_list]
     date_delta = [xx[0] - xx[1] for xx in zip(dates[1:], dates)]
 
     # Find the big gap, if it exists

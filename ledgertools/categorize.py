@@ -36,9 +36,9 @@ def categorize(transaction, ledger_path):
         Description : {description}
         Date        : {date}
         Amount      : {amount}
-        Account     : {account name}
+        Account     : {account_name}
         Notes       : {notes}
-        """).format(**transaction)
+        """).format(**transaction._asdict())
 
     categories = get_category_frequencies(ledger_path)
     return pick.pick(categories, title)
