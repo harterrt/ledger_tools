@@ -112,3 +112,15 @@ def test_single_cat(runner, monkeypatch):
         'Expenses:Food:Eating Out'
     ) in cat_files.ledger_trans
     assert cat_files.new_trans == nt.many_new_transactions[:-1]
+
+
+def test_multiple_cat(runner, monkeypatch):
+    cat_files = run_categorize(nt.many_new_transactions,
+                               'tests/data/categorize.ledger',
+                               'j\nj\n' + KB_INTERRUPT, runner, monkeypatch)
+
+    def formatter(trans):
+        return to_ledger_format(trans, 'Expenses:Food:Eating Out')
+
+    assert formatter(nt.many_new_transactions[-1]) in cat_files.ledger_trans
+    assert formatter(nt.many_new_transactions[-2]) in cat_files.ledger_trans

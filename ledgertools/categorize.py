@@ -16,20 +16,25 @@ def to_ledger_format(mint_tran, category):
 
 
 def run_categorization(trans_path, ledger_path, out_path):
+    success = True
+
     with open(trans_path, 'rb') as infile:
         trans = pickle.load(infile)
 
-    tran = trans.pop()
-    result = categorize(tran, ledger_path)[0]
+    while success:
+        tran = trans.pop()
+        result = categorize(tran, ledger_path)[0]
 
-    if result is not None:
-        # Save categorized transaction
-        with open(out_path, 'w') as outfile:
-            outfile.write(to_ledger_format(tran, result))
+        if result is not None:
+            # Save categorized transaction
+            with open(out_path, 'a') as outfile:
+                outfile.write(to_ledger_format(tran, result))
 
-        # Save our progress
-        with open(trans_path, 'wb') as outfile:
-            pickle.dump(trans, outfile)
+            # Save our progress
+            with open(trans_path, 'wb') as outfile:
+                pickle.dump(trans, outfile)
+        else:
+            success = False
 
 
 def get_category_frequencies(ledger_trans):
