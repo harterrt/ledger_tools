@@ -1,8 +1,10 @@
+import os.path
 import pytest
 import click
 from click import _termui_impl
 from click.testing import CliRunner
 from ledgertools import cli
+from ledgertools import ledger
 from ledgertools.categorize import to_ledger_format
 from .data import new_transactions as nt
 import pickle
@@ -18,15 +20,17 @@ def runner():
     return CliRunner()
 
 
-def load(path):
-    try:
-        if 'pickle' in path:
-            with open(path, 'rb') as infile:
-                return pickle.load(infile)
-        else:
-            with open(path, 'r') as infile:
-                return infile.read()
+def ledger_load(path):
+    if os.path.isfile(path):
+        return ledger.get_transactions(path)
+    else:
+        return None
 
+
+def pickle_load(path):
+    try:
+        with open(path, 'rb') as infile:
+            return pickle.load(infile)
     except FileNotFoundError:
         return None
 
@@ -89,7 +93,8 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
             ['new_trans', 'ledger_trans'],
         )
 
-        out = CatFiles(load(new_trans_path), load(new_ledger_path))
+        out = CatFiles(pickle_load(new_trans_path),
+                       ledger_load(new_ledger_path))
 
     return out
 
@@ -112,22 +117,18 @@ def test_single_cat(runner, monkeypatch):
                                'tests/data/categorize.ledger',
                                'j\n' + KB_INTERRUPT, runner, monkeypatch)
 
-    assert to_ledger_format(
-        nt.many_new_transactions[-1],
-        'Expenses:Food:Eating Out'
-    ) in cat_files.ledger_trans
+    assert cat_files.ledger_trans[0]['category'] == 'Expenses:Food:Eating Out'
     assert cat_files.new_trans == nt.many_new_transactions[:-1]
 
 
 def test_multiple_cat(runner, monkeypatch):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
-                               'j\nj\n' + KB_INTERRUPT, runner, monkeypatch)
+                               'j\n\n' + KB_INTERRUPT, runner, monkeypatch)
 
-    assert formatter(nt.many_new_transactions[-1],
-                     'Expenses:Food:Eating Out') in cat_files.ledger_trans
-    assert formatter(nt.many_new_transactions[-2],
-                     'Expenses:Food:Eating Out') in cat_files.ledger_trans
+    assert len(cat_files.ledger_trans) == 4 # Every tran has 2 lines
+    assert cat_files.ledger_trans[0]['category'] == 'Expenses:Food:Eating Out'
+    assert cat_files.ledger_trans[1]['category'] == 'CREDIT CARD'
 
 
 def test_case_insensitive_search(runner, monkeypatch):
@@ -137,8 +138,7 @@ def test_case_insensitive_search(runner, monkeypatch):
                                 '/card' + ESCAPE + '\n' + KB_INTERRUPT),
                                runner, monkeypatch)
 
-    assert formatter(nt.many_new_transactions[-1],
-                     'CREDIT CARD') in cat_files.ledger_trans
+    assert cat_files.ledger_trans[0]['category'] == 'CREDIT CARD'
 
 
 def test_search(runner, monkeypatch):
@@ -147,5 +147,4 @@ def test_search(runner, monkeypatch):
                                '/eat' + ESCAPE + '\n' + KB_INTERRUPT,
                                runner, monkeypatch)
 
-    assert formatter(nt.many_new_transactions[-1],
-                     'Expenses:Food:Eating Out') in cat_files.ledger_trans
+    assert cat_files.ledger_trans[0]['category'] == 'Expenses:Food:Eating Out'

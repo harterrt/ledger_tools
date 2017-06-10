@@ -13,6 +13,7 @@ def to_ledger_format(mint_tran, category):
             ; {notes}
             {new_category}  ${amount}
             {account name}
+
         """).format(new_category=category, **mint_tran)
 
 
