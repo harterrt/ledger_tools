@@ -21,6 +21,7 @@ def test_to_ledger_format():
             ; optional notes
             Expenses:Food:Eating Out  $10.00
             CREDIT CARD
+
         """)
 
     actual = to_ledger_format(mint_tran, 'Expenses:Food:Eating Out')
