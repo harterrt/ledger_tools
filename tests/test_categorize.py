@@ -10,6 +10,7 @@ from collections import namedtuple
 
 
 KB_INTERRUPT = '\x03'
+ESCAPE = '\x1b'
 
 
 @pytest.fixture
@@ -93,6 +94,10 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
     return out
 
 
+def formatter(trans, category):
+    return to_ledger_format(trans, category)
+
+
 def test_cat_abort(runner, monkeypatch):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
@@ -119,8 +124,28 @@ def test_multiple_cat(runner, monkeypatch):
                                'tests/data/categorize.ledger',
                                'j\nj\n' + KB_INTERRUPT, runner, monkeypatch)
 
-    def formatter(trans):
-        return to_ledger_format(trans, 'Expenses:Food:Eating Out')
+    assert formatter(nt.many_new_transactions[-1],
+                     'Expenses:Food:Eating Out') in cat_files.ledger_trans
+    assert formatter(nt.many_new_transactions[-2],
+                     'Expenses:Food:Eating Out') in cat_files.ledger_trans
 
-    assert formatter(nt.many_new_transactions[-1]) in cat_files.ledger_trans
-    assert formatter(nt.many_new_transactions[-2]) in cat_files.ledger_trans
+
+def test_case_insensitive_search(runner, monkeypatch):
+    cat_files = run_categorize(nt.many_new_transactions,
+                               'tests/data/categorize.ledger',
+                               ('/eat' + ESCAPE +
+                                '/card' + ESCAPE + '\n' + KB_INTERRUPT),
+                               runner, monkeypatch)
+
+    assert formatter(nt.many_new_transactions[-1],
+                     'CREDIT CARD') in cat_files.ledger_trans
+
+
+def test_search(runner, monkeypatch):
+    cat_files = run_categorize(nt.many_new_transactions,
+                               'tests/data/categorize.ledger',
+                               '/eat' + ESCAPE + '\n' + KB_INTERRUPT,
+                               runner, monkeypatch)
+
+    assert formatter(nt.many_new_transactions[-1],
+                     'Expenses:Food:Eating Out') in cat_files.ledger_trans
