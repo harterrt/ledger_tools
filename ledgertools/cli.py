@@ -40,7 +40,6 @@ def dump_new_trans(mint, ledger, out):
 @click.option('--out-path',
               help='Path to save resulting ledger transactions')
 def categorize(new_trans, ledger_path, out_path):
-    print('here we are')
     cat.run_categorization(new_trans, ledger_path, out_path)
 
 
