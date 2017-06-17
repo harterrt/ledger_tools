@@ -23,6 +23,8 @@ def run_categorization(trans_path, ledger_path, out_path):
     with open(trans_path, 'rb') as infile:
         trans = pickle.load(infile)
 
+    ledger_trans = ledger.get_transactions(ledger_path)
+
     while success:
         tran = trans.pop()
         result = categorize(tran, ledger_path)[0]
@@ -48,7 +50,10 @@ def get_category_frequencies(ledger_trans):
     return [key for key, value in most_common]
 
 
-def categorize(transaction, ledger_path):
+def categorize(transaction, ledger_trans):
+    format_vals = dict(
+        list(transaction.items()) + [('progress_bar', '<****----->')]
+    )
     title = textwrap.dedent("""\
         Transaction
         ===========
@@ -57,11 +62,9 @@ def categorize(transaction, ledger_path):
         Amount      : {amount}
         Account     : {account name}
         Notes       : {notes}
-        """).format(**transaction)
+        {progress_bar}
+        """).format(**format_vals)
 
-    # Get all transactions with similar transaction type (debit/credit) from
-    # ledger file
-    ledger_trans = ledger.get_transactions(ledger_path)
     categories = get_category_frequencies(ledger_trans)
 
     picker = pick.Picker(categories, title)
