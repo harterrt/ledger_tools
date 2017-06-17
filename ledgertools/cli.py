@@ -33,14 +33,14 @@ def dump_new_trans(mint, ledger, out):
 
 
 @cli.command()
-@click.option('--new-trans',
+@click.option('--new',
               help='Path to new transactions, as created by `dump_new_trans`')
-@click.option('--ledger-path',
+@click.option('--ledger',
               help='Path to save resulting ledger transactions')
-@click.option('--out-path',
+@click.option('--out',
               help='Path to save resulting ledger transactions')
-def categorize(new_trans, ledger_path, out_path):
-    cat.run_categorization(new_trans, ledger_path, out_path)
+def categorize(new, ledger, out):
+    cat.run_categorization(new, ledger, out)
 
 
 if __name__ == "__main__":

@@ -80,11 +80,11 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
             tmpfile.write(ledger_text)
 
         runner.invoke(cli.categorize, [
-            '--new-trans',
+            '--new',
             new_trans_path,
-            '--ledger-path',
+            '--ledger',
             existing_ledger_path,
-            '--out-path',
+            '--out',
             new_ledger_path,
         ], input=user_input, catch_exceptions=False)
 
@@ -126,7 +126,7 @@ def test_multiple_cat(runner, monkeypatch):
                                'tests/data/categorize.ledger',
                                'j\n\n' + KB_INTERRUPT, runner, monkeypatch)
 
-    assert len(cat_files.ledger_trans) == 4 # Every tran has 2 lines
+    assert len(cat_files.ledger_trans) == 4  # Every tran has 2 lines
     assert cat_files.ledger_trans[0]['category'] == 'Expenses:Food:Eating Out'
     assert cat_files.ledger_trans[1]['category'] == 'CREDIT CARD'
 
