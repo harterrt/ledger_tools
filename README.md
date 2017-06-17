@@ -9,14 +9,14 @@ Download a set of transactions from a financial aggregator.
 This command only prints some helpful instructions for now:
 
 ```bash
-python -m ledgertools.cli pull_mint
+python3 -m ledgertools.cli pull_mint
 ```
 
 Then identify transactions that do not yet exist in a given ledger file.
 Save these transactions to a temporary `new.pickle` file.
 
 ```bash
-python -m ledgertools.cli dump_new_trans \
+python3 -m ledgertools.cli dump_new_trans \
   --mint ~/Downloads/transactions.csv \
   --ledger ~/Private/account_data/.combined \
   --out ~/Private/account_data/new.pickle
@@ -25,7 +25,7 @@ python -m ledgertools.cli dump_new_trans \
 Finally, categorize the new transactions one-by-one using a CLI:
 
 ```bash
-python -m ledgertools.cli dump_new_trans \
+python3 -m ledgertools.cli categorize \
   --new ~/Private/account_data/new.pickle \
   --ledger ~/Private/account_data/.combined \
   --out ~/Private/account_data/new.ledger
