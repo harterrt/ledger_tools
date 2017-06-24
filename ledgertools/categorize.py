@@ -1,18 +1,14 @@
 from functional import seq
+from ast import literal_eval
 from collections import Counter
 from fuzzywuzzy import fuzz
-from click import progressbar
+from progressbar import ProgressBar
 from click._compat import _NonClosingTextIOWrapper
 import io
 import pick
 import pickle
 import textwrap
 from . import ledger
-
-
-class TTYIO(io.StringIO):
-    def isatty(self):
-        return True
 
 
 def to_ledger_format(mint_tran, category):
@@ -32,30 +28,21 @@ def run_categorization(trans_path, ledger_path, out_path):
         trans = pickle.load(infile)
 
     ledger_trans = ledger.get_transactions(ledger_path)
-    bar_text = TTYIO()
 
-    with progressbar(
-        length=len(trans),
-        label='Progress:',
-        show_pos=True,
-        file=bar_text
-    ) as bar:
-        bar.update(1)
-        while success:
-            bar.update(1)
-            tran = trans.pop()
-            result = categorize(tran, ledger_trans, bar_text)[0]
+    while success:
+        tran = trans.pop()
+        result = categorize(tran, ledger_trans)[0]
 
-            if result is not None:
-                # Save categorized transaction
-                with open(out_path, 'a') as outfile:
-                    outfile.write(to_ledger_format(tran, result))
+        if result is not None:
+            # Save categorized transaction
+            with open(out_path, 'a') as outfile:
+                outfile.write(to_ledger_format(tran, result))
 
-                # Save our progress
-                with open(trans_path, 'wb') as outfile:
-                    pickle.dump(trans, outfile)
-            else:
-                success = False
+            # Save our progress
+            with open(trans_path, 'wb') as outfile:
+                pickle.dump(trans, outfile)
+        else:
+            success = False
 
 
 def get_category_frequencies(ledger_trans):
@@ -67,10 +54,7 @@ def get_category_frequencies(ledger_trans):
     return [key for key, value in most_common]
 
 
-def categorize(transaction, ledger_trans, bar):
-    format_vals = dict(
-        list(transaction.items()) + [('bar_text', bar.getvalue())]
-    )
+def categorize(transaction, ledger_trans):
     title = textwrap.dedent("""\
         Transaction
         ===========
@@ -79,8 +63,7 @@ def categorize(transaction, ledger_trans, bar):
         Amount      : {amount}
         Account     : {account name}
         Notes       : {notes}
-        {bar_text}
-        """).format(**format_vals)
+        """).format(**transaction)
 
     categories = get_category_frequencies(ledger_trans)
 
