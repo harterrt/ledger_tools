@@ -1,6 +1,10 @@
 from functional import seq
+from ast import literal_eval
 from collections import Counter
 from fuzzywuzzy import fuzz
+from progressbar import ProgressBar
+from click._compat import _NonClosingTextIOWrapper
+import io
 import pick
 import pickle
 import textwrap
@@ -23,9 +27,11 @@ def run_categorization(trans_path, ledger_path, out_path):
     with open(trans_path, 'rb') as infile:
         trans = pickle.load(infile)
 
+    ledger_trans = ledger.get_transactions(ledger_path)
+
     while success:
         tran = trans.pop()
-        result = categorize(tran, ledger_path)[0]
+        result = categorize(tran, ledger_trans)[0]
 
         if result is not None:
             # Save categorized transaction
@@ -48,7 +54,7 @@ def get_category_frequencies(ledger_trans):
     return [key for key, value in most_common]
 
 
-def categorize(transaction, ledger_path):
+def categorize(transaction, ledger_trans):
     title = textwrap.dedent("""\
         Transaction
         ===========
@@ -59,9 +65,6 @@ def categorize(transaction, ledger_path):
         Notes       : {notes}
         """).format(**transaction)
 
-    # Get all transactions with similar transaction type (debit/credit) from
-    # ledger file
-    ledger_trans = ledger.get_transactions(ledger_path)
     categories = get_category_frequencies(ledger_trans)
 
     picker = pick.Picker(categories, title)
