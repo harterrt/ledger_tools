@@ -43,7 +43,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '50.57',
+        'amount': '60.57',
         'category': 'Expenses:Transport:Gas',
         'date': datetime.date(2011, 4, 8),
         'notes': ' None',
@@ -53,7 +53,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '-50.57',
+        'amount': '-60.57',
         'category': 'CREDIT CARD',
         'date': datetime.date(2011, 4, 8),
         'notes': ' None',

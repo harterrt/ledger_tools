@@ -17,3 +17,10 @@ def test_new_trans_from_path():
                                            'tests/data/example.ledger')
 
     assert new == new_transactions
+
+
+def test_new_trans_with_split_tran():
+    new = data_actions.new_trans_from_path(test_mint_data,
+                                           'tests/data/split_tran.ledger')
+
+    assert new == new_transactions

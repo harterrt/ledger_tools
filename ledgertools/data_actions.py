@@ -20,7 +20,9 @@ def key_mint_tran(mint_tran):
     return (
         TransactionKey(
             mint_tran['date'],
-            mint_tran['amount'],
+            # Look for posting against bank account (negative posting)
+            # since categorized transactions can be split
+            '-' + mint_tran['amount'],
             mint_tran['description']
         ),
         mint_tran
