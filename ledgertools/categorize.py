@@ -1,10 +1,6 @@
 from functional import seq
-from ast import literal_eval
 from collections import Counter
 from fuzzywuzzy import fuzz
-from progressbar import ProgressBar
-from click._compat import _NonClosingTextIOWrapper
-import io
 import pick
 import pickle
 import textwrap
@@ -27,11 +23,20 @@ def run_categorization(trans_path, ledger_path, out_path):
     with open(trans_path, 'rb') as infile:
         trans = pickle.load(infile)
 
+    total_trans = len(trans)
+
     ledger_trans = ledger.get_transactions(ledger_path)
 
     while success:
         tran = trans.pop()
-        result = categorize(tran, ledger_trans)[0]
+        result = categorize(
+            tran,
+            ledger_trans,
+            {
+                'current': total_trans - len(trans),
+                'total': total_trans
+            }
+        )[0]
 
         if result is not None:
             # Save categorized transaction
@@ -54,7 +59,20 @@ def get_category_frequencies(ledger_trans):
     return [key for key, value in most_common]
 
 
-def categorize(transaction, ledger_trans):
+def merge_dicts(*dict_args):
+    """
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    https://stackoverflow.com/questions/38987/how-to-merge-two-python-dictionaries-in-a-single-expression
+    """
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
+
+
+def categorize(transaction, ledger_trans, progress):
+    display_params = merge_dicts(transaction, progress)
     title = textwrap.dedent("""\
         Transaction
         ===========
@@ -63,7 +81,8 @@ def categorize(transaction, ledger_trans):
         Amount      : {amount}
         Account     : {account name}
         Notes       : {notes}
-        """).format(**transaction)
+        Progress    : {current} / {total}
+        """).format(**display_params)
 
     categories = get_category_frequencies(ledger_trans)
 
