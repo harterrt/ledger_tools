@@ -1,4 +1,5 @@
 from csv import DictReader
+from .utils import parse_amount
 import logging
 import datetime
 
@@ -11,20 +12,22 @@ def get_data(path='~/Private/account_data/mint_transactions.csv'):
 
 
 def parse_transaction(tran):
-    """Clean headers and parse values"""
+    # Convert raw transaction `tran` into an incomplete transaction
 
-    modifiers = {
-        'date': lambda dd: datetime.datetime.strptime(dd, '%m/%d/%Y').date(),
+    # Amounts decrease asset accounts unless specified as a credit.
+    amount_multiplier = 1 if tran['Transaction Type'] == 'credit' else -1
+
+    # Build incomplete transaction and return
+    return {
+        'date': datetime.datetime.strptime(tran['Date'], '%m/%d/%Y').date(),
+        'description': tran['Description'],
+        'account': tran['Account Name'],
+        'amount': parse_amount(tran['Amount']) * amount_multiplier,
+        'notes': tran['Notes'],
+        'supplement' : [
+            ('Original Description', tran['Original Description'])
+        ]
     }
-
-    def clean_field(field):
-        """Map key to lowercase and clean value if function specified"""
-        key = field[0].lower()
-        value = modifiers.get(key, lambda x: x)(field[1])
-
-        return key, value
-
-    return dict(map(clean_field, tran.items()))
 
 
 def filter_pending_trans(trans_list):

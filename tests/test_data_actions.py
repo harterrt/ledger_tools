@@ -24,3 +24,11 @@ def test_new_trans_with_split_tran():
                                            'tests/data/split_tran.ledger')
 
     assert new == new_transactions
+
+
+def test_new_trans_with_small_amount():
+    small_mint_trans = 'tests/data/mint_transactions_small_tran.csv'
+    new = data_actions.new_trans_from_path(small_mint_trans,
+                                           'tests/data/small_tran.ledger')
+
+    assert new == new_transactions

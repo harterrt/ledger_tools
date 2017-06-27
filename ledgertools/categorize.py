@@ -1,6 +1,7 @@
 from functional import seq
 from collections import Counter
 from fuzzywuzzy import fuzz
+from .utils import dump_amount
 import pick
 import pickle
 import textwrap
@@ -11,10 +12,13 @@ def to_ledger_format(mint_tran, category):
     return textwrap.dedent("""\
         {date}  {description}
             ; {notes}
-            {new_category}  ${amount}
-            {account name}
+            {new_category}  {new_amount}
+            {account}  {existing_amount}
 
-        """).format(new_category=category, **mint_tran)
+        """).format(new_category=category,
+                    new_amount=dump_amount(-1 * mint_tran['amount']),
+                    existing_amount=dump_amount(mint_tran['amount']),
+                    **mint_tran)
 
 
 def run_categorization(trans_path, ledger_path, out_path):
@@ -73,13 +77,14 @@ def merge_dicts(*dict_args):
 
 def categorize(transaction, ledger_trans, progress):
     display_params = merge_dicts(transaction, progress)
+    # TODO: handle supplementary data
     title = textwrap.dedent("""\
         Transaction
         ===========
-        Description : {description} ({original description})
+        Description : {description}
         Date        : {date}
         Amount      : {amount}
-        Account     : {account name}
+        Account     : {account}
         Notes       : {notes}
         Progress    : {current} / {total}
         """).format(**display_params)

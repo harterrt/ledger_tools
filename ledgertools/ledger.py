@@ -1,4 +1,5 @@
 from subprocess import check_output
+from .utils import parse_amount
 import datetime
 from io import StringIO
 import csv
@@ -36,7 +37,7 @@ def parse_transaction(tran):
         # TODO: maybe use a named tuple with dollars and cents?
         #       better than a int of cents, since you won't forget to render
         #       later
-        'amount': lambda x: "{:0.2f}".format(float(x))
+        'amount': parse_amount
     }
     return {k: modifiers.get(k, lambda x: x)(v)
             for (k, v)

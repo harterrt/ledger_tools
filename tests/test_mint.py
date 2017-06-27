@@ -6,13 +6,56 @@ from ledgertools import mint
 test_mint_data = 'tests/data/mint_transactions_example.csv'
 
 
-def test_parse_trans():
-    actual = mint.parse_transaction({'date': '1/01/2017',
-                                     'amount': '10.00',
-                                     'other': 'stays the same'})
-    expected = {'date': datetime.date(2017, 1, 1),
-                'amount': '10.00',
-                'other': 'stays the same'}
+def test_parse_tran():
+    actual = mint.parse_transaction({
+        'Account Name': 'CREDIT CARD',
+        'Amount': '2.50',
+        'Category': 'Coffee Shop',
+        'Date': '10/10/2016',
+        'Description': 'Commonplace',
+        'Labels': '',
+        'Notes': '',
+        'Original Description': 'COMMONPLACE COFFEE HOUSE',
+        'Transaction Type': 'debit'
+    })
+
+    expected = {
+        'account': 'CREDIT CARD',
+        'amount': -250,
+        'date': datetime.date(2016, 10, 10),
+        'description': 'Commonplace',
+        'notes': '',
+        'supplement': [
+            ('Original Description', 'COMMONPLACE COFFEE HOUSE')
+        ]
+    }
+
+    assert actual == expected
+
+
+def test_parse_refund():
+    actual = mint.parse_transaction({
+        'Account Name': 'CREDIT CARD',
+        'Amount': '2.50',
+        'Category': 'ATM Refund',
+        'Date': '10/10/2016',
+        'Description': 'ATM Refund',
+        'Labels': '',
+        'Notes': '',
+        'Original Description': 'ATM REFUND',
+        'Transaction Type': 'credit'
+    })
+
+    expected = {
+        'account': 'CREDIT CARD',
+        'amount': 250,
+        'date': datetime.date(2016, 10, 10),
+        'description': 'ATM Refund',
+        'notes': '',
+        'supplement': [
+            ('Original Description', 'ATM REFUND')
+        ]
+    }
 
     assert actual == expected
 
@@ -21,43 +64,38 @@ def test_get_data():
     actual = mint.get_data('tests/data/mint_transactions_basic.csv')
     expected = [
         {
-            'account name': 'CREDIT CARD',
-            'amount': '1250.00',
-            'category': 'Gift',
+            'account': 'CREDIT CARD',
+            'amount': -125000,
             'date': datetime.date(2016, 10, 10),
             'description': 'Example Description',
-            'labels': '',
             'notes': '',
-            'original description': 'FULL DESCRIPTION',
-            'transaction type': 'debit'
+            'supplement': [
+                ('Original Description', 'FULL DESCRIPTION'),
+            ]
         },
         {
-            'account name': 'CHECKING',
-            'amount': '5.00',
-            'category': 'Bank Fee',
+            'account': 'CHECKING',
+            'amount': -500,
             'date': datetime.date(2011, 4, 7),
             'description': 'Xxxxxxx Xxxxxxxxxxx Xxx',
-            'labels': '',
             'notes': '',
-            'original description': 'XXXXXXX XXXXXXX XXX',
-            'transaction type': 'debit'
+            'supplement': [
+                ('Original Description', 'XXXXXXX XXXXXXX XXX'),
+            ]
         },
         {
-            'account name': 'CREDIT CARD',
-            'amount': '50.57',
-            'category': 'Gas & Fuel',
+            'account':'CREDIT CARD',
+            'amount': -5057,
             'date': datetime.date(2011, 4, 8),
             'description': 'Xxxxxx',
-            'labels': '',
             'notes': '',
-            'original description': 'XXXXXX 1231231231',
-            'transaction type': 'debit'
+            'supplement': [
+                ('Original Description', 'XXXXXX 1231231231'),
+            ]
         },
     ]
 
     assert actual == expected
-
-
 def test_pending_filter():
     mint_trans = mint.get_data(test_mint_data)
     filtered = mint.filter_pending_trans(mint_trans)

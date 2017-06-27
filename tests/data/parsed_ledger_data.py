@@ -34,7 +34,7 @@ parsed_ledger_data = [
     },
     {
         'amount': '-5.00',
-        'category': 'CREDIT CARD',
+        'category': 'CHECKING',
         'date': datetime.date(2011, 4, 7),
         'notes': ' None',
         'payee': 'Xxxxxxx Xxxxxxxxxxx Xxx',
