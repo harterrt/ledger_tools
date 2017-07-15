@@ -1,6 +1,7 @@
 import pytest
 import datetime
 from ledgertools import mint
+from decimal import Decimal
 
 
 test_mint_data = 'tests/data/mint_transactions_example.csv'
@@ -21,7 +22,7 @@ def test_parse_tran():
 
     expected = {
         'account': 'CREDIT CARD',
-        'amount': -250,
+        'amount': Decimal('-2.50'),
         'date': datetime.date(2016, 10, 10),
         'description': 'Commonplace',
         'notes': '',
@@ -48,7 +49,7 @@ def test_parse_refund():
 
     expected = {
         'account': 'CREDIT CARD',
-        'amount': 250,
+        'amount': Decimal('2.50'),
         'date': datetime.date(2016, 10, 10),
         'description': 'ATM Refund',
         'notes': '',
@@ -65,7 +66,7 @@ def test_get_data():
     expected = [
         {
             'account': 'CREDIT CARD',
-            'amount': -125000,
+            'amount': Decimal('-1250.00'),
             'date': datetime.date(2016, 10, 10),
             'description': 'Example Description',
             'notes': '',
@@ -75,7 +76,7 @@ def test_get_data():
         },
         {
             'account': 'CHECKING',
-            'amount': -500,
+            'amount': Decimal('-5.00'),
             'date': datetime.date(2011, 4, 7),
             'description': 'Xxxxxxx Xxxxxxxxxxx Xxx',
             'notes': '',
@@ -85,7 +86,7 @@ def test_get_data():
         },
         {
             'account':'CREDIT CARD',
-            'amount': -5057,
+            'amount': Decimal('-50.57'),
             'date': datetime.date(2011, 4, 8),
             'description': 'Xxxxxx',
             'notes': '',

@@ -1,10 +1,11 @@
+from decimal import Decimal
 import datetime
 
 
 new_transactions = [
     {
         'account': 'CREDIT CARD',
-        'amount': -1000,
+        'amount': Decimal('-10.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
         'notes': '',
@@ -18,7 +19,7 @@ new_transactions = [
 many_new_transactions = [
     {
         'account': 'CREDIT CARD',
-        'amount': -1000,
+        'amount': Decimal('-10.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
         'notes': '',
@@ -28,7 +29,7 @@ many_new_transactions = [
     },
     {
         'account': 'CREDIT CARD',
-        'amount': -5000,
+        'amount': Decimal('-50.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
         'notes': '',
@@ -38,7 +39,7 @@ many_new_transactions = [
     },
     {
         'account': 'CREDIT CARD',
-        'amount': -6700,
+        'amount': Decimal('-67.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
         'notes': '',

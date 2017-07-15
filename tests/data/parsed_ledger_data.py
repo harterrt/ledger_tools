@@ -1,9 +1,10 @@
 import datetime
+from decimal import Decimal
 
 
 parsed_ledger_data = [
     {
-        'amount': '50.57',
+        'amount': Decimal('50.57'),
         'category': 'Expenses:Food:Eating Out',
         'date': datetime.date(2011, 4, 8),
         'notes': ' None',
@@ -13,7 +14,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '-50.57',
+        'amount': Decimal('-50.57'),
         'category': 'CREDIT CARD',
         'date': datetime.date(2011, 4, 8),
         'notes': ' None',
@@ -23,7 +24,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '5.00',
+        'amount': Decimal('5.00'),
         'category': 'Expenses:Incedentals:Gotchas',
         'date': datetime.date(2011, 4, 7),
         'notes': ' None',
@@ -33,7 +34,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '-5.00',
+        'amount': Decimal('-5.00'),
         'category': 'CHECKING',
         'date': datetime.date(2011, 4, 7),
         'notes': ' None',
@@ -43,7 +44,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '60.57',
+        'amount': Decimal('60.57'),
         'category': 'Expenses:Transport:Gas',
         'date': datetime.date(2011, 4, 8),
         'notes': ' None',
@@ -53,7 +54,7 @@ parsed_ledger_data = [
         'unknown': ''
     },
     {
-        'amount': '-60.57',
+        'amount': Decimal('-60.57'),
         'category': 'CREDIT CARD',
         'date': datetime.date(2011, 4, 8),
         'notes': ' None',

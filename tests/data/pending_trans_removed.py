@@ -1,10 +1,11 @@
+from decimal import Decimal
 import datetime
 
 
 pending_trans_removed = [
     {
         'account': 'CHECKING',
-        'amount': -500,
+        'amount': Decimal('-5.00'),
         'date': datetime.date(2011, 4, 7),
         'description': 'Xxxxxxx Xxxxxxxxxxx Xxx',
         'notes': '',
@@ -14,7 +15,7 @@ pending_trans_removed = [
     },
     {
         'account': 'CREDIT CARD',
-        'amount': -5057,
+        'amount': Decimal('-50.57'),
         'date': datetime.date(2011, 4, 8),
         'description': 'Xxxxxx',
         'notes': '',
@@ -24,7 +25,7 @@ pending_trans_removed = [
     },
     {
         'account': 'CREDIT CARD',
-        'amount': -1000,
+        'amount': Decimal('-10.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
         'notes': '',

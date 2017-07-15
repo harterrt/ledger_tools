@@ -46,11 +46,6 @@ def find_new(mint_trans, ledger_trans):
     keyed_trans = list(map(key_mint_tran, mint_trans))
     new_trans = list(filter(trans_filter(ledger_trans), keyed_trans))
 
-    print(list(keyed_trans))
-    print('-'*80)
-    print(list(map(simplify_ledger_tran, ledger_trans)))
-    print('-'*80)
-    print(new_trans)
     return list(map(lambda x: x[1], new_trans))
 
 
