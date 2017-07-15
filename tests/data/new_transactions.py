@@ -1,53 +1,50 @@
+from decimal import Decimal
 import datetime
 
 
 new_transactions = [
     {
-        'account name': 'CREDIT CARD',
-        'amount': '10.00',
-        'category': 'Gas & Fuel',
+        'account': 'CREDIT CARD',
+        'amount': Decimal('-10.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
-        'labels': '',
         'notes': '',
-        'original description': 'Orig desc',
-        'transaction type': 'debit'
+        'supplement': [
+            ('Original Description', 'Orig desc'),
+        ]
     }
 ]
 
 
 many_new_transactions = [
     {
-        'account name': 'CREDIT CARD',
-        'amount': '10.00',
-        'category': 'Gas & Fuel',
+        'account': 'CREDIT CARD',
+        'amount': Decimal('-10.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
-        'labels': '',
         'notes': '',
-        'original description': 'Orig desc',
-        'transaction type': 'debit'
+        'supplement': [
+            ('Original Description', 'Orig desc'),
+        ]
     },
     {
-        'account name': 'CREDIT CARD',
-        'amount': '50.00',
-        'category': 'Gas & Fuel',
+        'account': 'CREDIT CARD',
+        'amount': Decimal('-50.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
-        'labels': '',
         'notes': '',
-        'original description': 'Orig desc',
-        'transaction type': 'debit'
+        'supplement': [
+            ('Original Description', 'Orig desc'),
+        ]
     },
     {
-        'account name': 'CREDIT CARD',
-        'amount': '67.00',
-        'category': 'Gas & Fuel',
+        'account': 'CREDIT CARD',
+        'amount': Decimal('-67.00'),
         'date': datetime.date(2011, 4, 10),
         'description': 'New Tran Description',
-        'labels': '',
         'notes': '',
-        'original description': 'Orig desc',
-        'transaction type': 'debit'
+        'supplement': [
+            ('Original Description', 'Orig desc'),
+        ]
     }
 ]

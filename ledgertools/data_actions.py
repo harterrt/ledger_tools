@@ -2,14 +2,6 @@ from collections import namedtuple
 from . import mint, ledger
 
 
-# def render_new_trans(mint_file, ledger_file):
-#    """Stub function for finding new mint transactions"""
-#    mint_trans = mint.filter_pending_trans(mint.get_data(mint_file))
-#    ledger_trans = ledger.read_ledger_trans(ledger_file)
-#
-#    return render(diff(mint_trans, ledger_trans))
-
-
 TransactionKey = namedtuple(
     'TransactionKey',
     ['date', 'amount', 'description']
@@ -20,9 +12,7 @@ def key_mint_tran(mint_tran):
     return (
         TransactionKey(
             mint_tran['date'],
-            # Look for posting against bank account (negative posting)
-            # since categorized transactions can be split
-            '-' + mint_tran['amount'],
+            mint_tran['amount'],
             mint_tran['description']
         ),
         mint_tran
@@ -52,8 +42,8 @@ def trans_filter(ledger_trans):
 
 def find_new(mint_trans, ledger_trans):
     """Finds mint trans not yet included in a list of ledger trans"""
-    keyed_trans = map(key_mint_tran, mint_trans)
-    new_trans = filter(trans_filter(ledger_trans), keyed_trans)
+    keyed_trans = list(map(key_mint_tran, mint_trans))
+    new_trans = list(filter(trans_filter(ledger_trans), keyed_trans))
 
     return list(map(lambda x: x[1], new_trans))
 

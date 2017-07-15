@@ -31,16 +31,44 @@ python3 -m ledgertools.cli categorize \
   --out ~/Private/account_data/new.ledger
 ```
 
-This command will prompt the user with a new transaction
-and a list of all existing categories from the given ledger account.
-This allows you to quickly find existing accounts to post this transaction against.
+# What is Categorization?
 
-By default, the categories are listed by frequency which is easy but not very useful.
+Every transaction is posted to at lease two accounts.
+Usually, one of the accounts is implied by the source data.
+For example, all transactions downloaded from your checking account
+should be posted against:
+
+* an account representing you checking account (implied)
+* some other account or virtual account (e.g. Expenses:Gas or Assets:Savings)
+
+The categorization command will prompt the user with a new transaction
+and a list of all existing accounts in the given ledger account.
+This allows you to quickly find existing accounts
+to post this transaction against.
 
 ## Categorization Actions
 
+By default,
+the categories are listed by frequency which is easy but not very useful.
+We provide some additional actions to help you categorize faster:
+
 * You can type '/' to enter fuzzy search mode.
   The categories will be reordered to best match your query.
+
+# Transaction Type
+
+All source plugins must return a list of *incomplete transactions*.
+with exactly one account missing.
+The incomplete transactions must have the following fields:
+
+* `date` - `datetime.date`
+* `description` - `string`
+* `account` - `string`
+* `amount` - `int` representing cents
+* `notes` - `string`
+* `supplement` - a `list` of `(string, string)` values
+   to add context when categorizing
+
 
 # Roadmap
 
