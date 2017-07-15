@@ -85,7 +85,7 @@ def test_get_data():
             ]
         },
         {
-            'account':'CREDIT CARD',
+            'account': 'CREDIT CARD',
             'amount': Decimal('-50.57'),
             'date': datetime.date(2011, 4, 8),
             'description': 'Xxxxxx',
@@ -97,6 +97,8 @@ def test_get_data():
     ]
 
     assert actual == expected
+
+
 def test_pending_filter():
     mint_trans = mint.get_data(test_mint_data)
     filtered = mint.filter_pending_trans(mint_trans)

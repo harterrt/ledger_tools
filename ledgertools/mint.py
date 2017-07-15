@@ -24,7 +24,7 @@ def parse_transaction(tran):
         'account': tran['Account Name'],
         'amount': parse_amount(tran['Amount']) * amount_multiplier,
         'notes': tran['Notes'],
-        'supplement' : [
+        'supplement': [
             ('Original Description', tran['Original Description'])
         ]
     }

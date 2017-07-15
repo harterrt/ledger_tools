@@ -1,5 +1,4 @@
 from collections import namedtuple
-from .utils import dump_amount
 from . import mint, ledger
 
 
