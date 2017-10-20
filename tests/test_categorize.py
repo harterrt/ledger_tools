@@ -158,7 +158,7 @@ def test_search(runner, monkeypatch, nt):
 def test_naive_bayes(runner, monkeypatch, nt):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
-                               'b' + ESCAPE + '\n' + KB_INTERRUPT,
+                               'b' + '\n' + KB_INTERRUPT,
                                runner, monkeypatch)
 
     assert cat_files.ledger_trans[0]['category'] == 'CREDIT CARD'

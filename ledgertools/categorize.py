@@ -2,6 +2,9 @@ from functional import seq
 from collections import Counter
 from fuzzywuzzy import fuzz
 from .utils import dump_amount
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+import numpy as np
 import pick
 import pickle
 import textwrap
@@ -95,35 +98,40 @@ def categorize(transaction, ledger_trans, progress):
     picker = pick.Picker(categories, title)
 
     # Register custom handlers
+    picker.register_custom_handler(ord('f'), pick_set(categories))
     picker.register_custom_handler(ord('/'), pick_search)
+    picker.register_custom_handler(
+        ord('b'),
+        pick_bayes(ledger_trans, transaction)
+    )
 
     return picker.start()
 
 
-def custom_pick_handler(func, *args, **kwargs):
-    def handler(picker):
-        exit_chars = [27, ord('\n')]  # 27 is escape
-        chars = []
+def pick_set(categories):
+    def pick_handler(picker):
+        picker.options = categories
+        picker.draw()
+        return None
 
-        # There's probably a more elegant recursive method here
-        # but I'm hacking today
-        while True:
-            picker.draw()
-            c = picker.screen.getch()
-
-            if c in exit_chars:
-                return None
-            else:
-                chars.append(c)
-                func(picker, chars, *args, **kwargs)
-
-    return handler
+    return pick_handler
 
 
-@custom_pick_handler
-def pick_search(picker, chars):
-    search_string = ''.join(map(chr, chars))
-    picker.options = fuzzy_order(picker.options, search_string)
+def pick_search(picker):
+    exit_chars = [27, ord('\n')]  # 27 is escape
+    search_string = ''
+
+    # There's probably a more elegant recursive method here
+    # but I'm hacking today
+    while True:
+        picker.draw()
+        c = picker.screen.getch()
+
+        if c in exit_chars:
+            return None
+        else:
+            search_string += chr(c)
+            picker.options = fuzzy_order(picker.options, search_string)
 
 
 def fuzzy_order(options, search_string):
@@ -134,3 +142,53 @@ def fuzzy_order(options, search_string):
         .sorted(key=key_func) \
         .list()
 
+
+def pick_bayes(ledger_trans, tran):
+    def pick_handler(picker):
+        new_order, vectorizer, model = train(ledger_trans, tran)
+        picker.options = new_order
+        picker.draw()
+        return None
+
+    return pick_handler
+
+
+def train(ledger_trans, tran):
+    vectorizer = TfidfVectorizer()
+
+    interesting_trans = (
+        seq(ledger_trans)
+        .filter(lambda x: x['category'] != tran['account'])
+    )
+
+    X = vectorizer.fit_transform(
+        interesting_trans
+        .map(lambda x: x['payee'])
+    )
+
+    y = np.array(
+        interesting_trans
+        .map(lambda x: x['category'])
+        .list()
+    )
+
+    model = MultinomialNB().fit(X, y)
+
+    classes = model.classes_
+
+    probs = model.predict_proba(
+        vectorizer.transform([tran['description']])
+    ).tolist()[0]
+
+    ordered_classes = [
+        acct
+        for (prob, acct)
+        in sorted(zip(probs, classes), reverse=True)
+    ]
+
+    return ordered_classes, vectorizer, model
+
+
+# def predict_order(options, model):
+#     def key_func(options):
+#         return model.predict_proba(Vectorizer(
