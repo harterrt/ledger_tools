@@ -86,6 +86,7 @@ def categorize(transaction, ledger_trans, progress):
         Amount      : {amount}
         Account     : {account}
         Notes       : {notes}
+        Supplement  : {supplement}
         Progress    : {current} / {total}
         """).format(**display_params)
 

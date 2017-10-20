@@ -6,13 +6,18 @@ from click.testing import CliRunner
 from ledgertools import cli
 from ledgertools import ledger
 from ledgertools.categorize import to_ledger_format
-from .data import new_transactions as nt
+from .data import new_transactions
 import pickle
 from collections import namedtuple
 
 
 KB_INTERRUPT = '\x03'
 ESCAPE = '\x1b'
+
+
+@pytest.fixture
+def nt():
+    return new_transactions
 
 
 @pytest.fixture
@@ -103,7 +108,7 @@ def formatter(trans, category):
     return to_ledger_format(trans, category)
 
 
-def test_cat_abort(runner, monkeypatch):
+def test_cat_abort(runner, monkeypatch, nt):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
                                KB_INTERRUPT, runner, monkeypatch)
@@ -112,7 +117,7 @@ def test_cat_abort(runner, monkeypatch):
     assert cat_files.new_trans == nt.many_new_transactions
 
 
-def test_single_cat(runner, monkeypatch):
+def test_single_cat(runner, monkeypatch, nt):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
                                'j\n' + KB_INTERRUPT, runner, monkeypatch)
@@ -121,7 +126,7 @@ def test_single_cat(runner, monkeypatch):
     assert cat_files.new_trans == nt.many_new_transactions[:-1]
 
 
-def test_multiple_cat(runner, monkeypatch):
+def test_multiple_cat(runner, monkeypatch, nt):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
                                'j\n\n' + KB_INTERRUPT, runner, monkeypatch)
@@ -131,7 +136,7 @@ def test_multiple_cat(runner, monkeypatch):
     assert cat_files.ledger_trans[1]['category'] == 'CREDIT CARD'
 
 
-def test_case_insensitive_search(runner, monkeypatch):
+def test_case_insensitive_search(runner, monkeypatch, nt):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
                                ('/eat' + ESCAPE +
@@ -141,10 +146,19 @@ def test_case_insensitive_search(runner, monkeypatch):
     assert cat_files.ledger_trans[0]['category'] == 'CREDIT CARD'
 
 
-def test_search(runner, monkeypatch):
+def test_search(runner, monkeypatch, nt):
     cat_files = run_categorize(nt.many_new_transactions,
                                'tests/data/categorize.ledger',
                                '/eat' + ESCAPE + '\n' + KB_INTERRUPT,
                                runner, monkeypatch)
 
     assert cat_files.ledger_trans[0]['category'] == 'Expenses:Food:Eating Out'
+
+
+def test_naive_bayes(runner, monkeypatch, nt):
+    cat_files = run_categorize(nt.many_new_transactions,
+                               'tests/data/categorize.ledger',
+                               'b' + ESCAPE + '\n' + KB_INTERRUPT,
+                               runner, monkeypatch)
+
+    assert cat_files.ledger_trans[0]['category'] == 'CREDIT CARD'

@@ -21,7 +21,7 @@ many_new_transactions = [
         'account': 'CREDIT CARD',
         'amount': Decimal('-10.00'),
         'date': datetime.date(2011, 4, 10),
-        'description': 'New Tran Description',
+        'description': 'Check #102',
         'notes': '',
         'supplement': [
             ('Original Description', 'Orig desc'),
