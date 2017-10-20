@@ -100,21 +100,30 @@ def categorize(transaction, ledger_trans, progress):
     return picker.start()
 
 
-def pick_search(picker):
-    exit_chars = [27, ord('\n')]  # 27 is escape
-    search_string = ''
+def custom_pick_handler(func, *args, **kwargs):
+    def handler(picker):
+        exit_chars = [27, ord('\n')]  # 27 is escape
+        chars = []
 
-    # There's probably a more elegant recursive method here
-    # but I'm hacking today
-    while True:
-        picker.draw()
-        c = picker.screen.getch()
+        # There's probably a more elegant recursive method here
+        # but I'm hacking today
+        while True:
+            picker.draw()
+            c = picker.screen.getch()
 
-        if c in exit_chars:
-            return None
-        else:
-            search_string += chr(c)
-            picker.options = fuzzy_order(picker.options, search_string)
+            if c in exit_chars:
+                return None
+            else:
+                chars.append(c)
+                func(picker, chars, *args, **kwargs)
+
+    return handler
+
+
+@custom_pick_handler
+def pick_search(picker, chars):
+    search_string = ''.join(map(chr, chars))
+    picker.options = fuzzy_order(picker.options, search_string)
 
 
 def fuzzy_order(options, search_string):
@@ -124,3 +133,4 @@ def fuzzy_order(options, search_string):
     return seq(options) \
         .sorted(key=key_func) \
         .list()
+
