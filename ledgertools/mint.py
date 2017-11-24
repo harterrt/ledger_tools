@@ -4,7 +4,7 @@ import logging
 import datetime
 
 
-def get_data(path='~/Private/account_data/mint_transactions.csv'):
+def get_data(path):
     with open(path, 'r') as infile:
         trans = [parse_transaction(tt) for tt in DictReader(infile)]
 
