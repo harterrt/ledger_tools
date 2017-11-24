@@ -1,16 +1,40 @@
 import click
+import pickle
+from importlib.machinery import SourceFileLoader
 from . import data_actions
 from . import categorize as cat
-import pickle
 
+
+def get_settings_from_module(module):
+    '''https://github.com/getpelican/pelican/blob/master/pelican/settings.py#L212'''
+    settings = {}
+    if module is not None:
+        settings.update(
+                (k, v) for k, v in inspect.getmembers(module) if k.isupper()
+        )
+
+    return settings
 
 @click.group()
-def cli():
-    pass
+@click.option('--config', help='Path to ledger config file.',
+              type=click.Path(exists=True),
+              default='~/.config/ledger_tools/config')
+@click.pass_context
+def cli(ctx, config_path):
+    try:
+        module = SourceFileLoader('lt_config', config_path).load_module())
+    except e:
+        module = None
+        click.echo(
+            "Couldn't load config file %s: %s".format(config_path, e.msg)
+        )
+
+    ctx.obj['config'] = get_settings_from_module(module)
 
 
 @cli.command()
-def pull_mint():
+@click.pass_context
+def pull_mint(ctx):
     click.echo("Log into mint, then go to the following address:\n"
                "https://wwws.mint.com/transactionDownload.event?"
                "queryNew=&offset=0&filterType=cash&comparableType=4"
