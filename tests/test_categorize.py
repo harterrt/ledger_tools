@@ -1,14 +1,15 @@
-import os.path
 import pytest
+import os.path
+import pickle
 import click
 from click import _termui_impl
 from click.testing import CliRunner
+from collections import namedtuple
+
 from ledgertools import cli
 from ledgertools import ledger
 from ledgertools.categorize import to_ledger_format
 from .data import new_transactions
-import pickle
-from collections import namedtuple
 
 
 KB_INTERRUPT = '\x03'
