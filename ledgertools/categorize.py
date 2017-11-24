@@ -187,8 +187,3 @@ def train(ledger_trans, tran):
     ]
 
     return ordered_classes, vectorizer, model
-
-
-# def predict_order(options, model):
-#     def key_func(options):
-#         return model.predict_proba(Vectorizer(
