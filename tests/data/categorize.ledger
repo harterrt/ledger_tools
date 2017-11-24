@@ -1,14 +1,29 @@
-2011-04-08  Xxxxxx
+2011-04-08  Burger Joint
+    ; None
+    Expenses:Food:Eating Out  $15.57
+    CREDIT CARD
+
+2011-04-08  Burger Heaven #1123
     ; None
     Expenses:Food:Eating Out  $50.57
     CREDIT CARD
 
-2011-04-07  Xxxxxxx Xxxxxxxxxxx Xxx
+2011-04-07  Commonplace Coffee
     ; None
     Expenses:Food:Eating Out  $5.00
     CREDIT CARD
 
-2011-04-08  Xxxxxx
+2011-04-08  GetGo
     ; None
     Expenses:Transport:Gas  $50.57
+    CREDIT CARD
+
+2011-04-08  Check #101
+    ; None
+    Expenses:Utilities:Gas  $77.30
+    CREDIT CARD
+
+2011-04-08  Check #100
+    ; None
+    Expenses:Utilities:Gas  $80.01
     CREDIT CARD

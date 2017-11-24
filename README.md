@@ -54,6 +54,8 @@ We provide some additional actions to help you categorize faster:
 
 * You can type '/' to enter fuzzy search mode.
   The categories will be reordered to best match your query.
+* Typing 'b' will train a naive bayes classifier
+  and reorder the categories based on their match liklihood.
 
 # Transaction Type
 
