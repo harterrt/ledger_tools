@@ -7,7 +7,10 @@ from . import categorize as cat
 
 def get_settings_from_module(module):
     '''https://github.com/getpelican/pelican/blob/master/pelican/settings.py#L212'''
-    settings = {}
+
+    settings = {
+        'MINT_ACCOUNT_OVERRIDES': {}
+    }
     if module is not None:
         settings.update(
                 (k, v) for k, v in inspect.getmembers(module) if k.isupper()
@@ -33,8 +36,7 @@ def cli(ctx, config_path):
 
 
 @cli.command()
-@click.pass_context
-def pull_mint(ctx):
+def pull_mint():
     click.echo("Log into mint, then go to the following address:\n"
                "https://wwws.mint.com/transactionDownload.event?"
                "queryNew=&offset=0&filterType=cash&comparableType=4"
@@ -49,8 +51,10 @@ def pull_mint(ctx):
               type=click.Path(exists=True), required=True)
 @click.option('--out', help='Path to save the new tranasactions.',
               type=click.Path(), required=True)
-def dump_new_trans(mint, ledger, out):
-    new = data_actions.new_trans_from_path(mint, ledger)
+@click.pass_context
+def dump_new_trans(ctx, mint, ledger, out):
+    overrides = ctx.obj.get('MINT_ACCOUNT_OVERRIDES', {})
+    new = data_actions.new_trans_from_path(mint, ledger, overrides)
 
     with open(out, 'wb') as outfile:
         pickle.dump(new, outfile)

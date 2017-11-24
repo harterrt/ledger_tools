@@ -48,6 +48,6 @@ def find_new(mint_trans, ledger_trans):
     return list(map(lambda x: x[1], new_trans))
 
 
-def new_trans_from_path(mint_path, ledger_path):
-    return find_new(mint.get_transactions(mint_path),
+def new_trans_from_path(mint_path, ledger_path, overrides):
+    return find_new(mint.get_transactions(mint_path, overrides),
                     ledger.get_transactions(ledger_path))

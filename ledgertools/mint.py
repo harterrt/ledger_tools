@@ -4,14 +4,14 @@ import logging
 import datetime
 
 
-def get_data(path):
+def get_data(path, overrides):
     with open(path, 'r') as infile:
-        trans = [parse_transaction(tt) for tt in DictReader(infile)]
+        trans = [parse_transaction(tt, overrides) for tt in DictReader(infile)]
 
     return trans
 
 
-def parse_transaction(tran):
+def parse_transaction(tran, overrides):
     # Convert raw transaction `tran` into an incomplete transaction
 
     # Amounts decrease asset accounts unless specified as a credit.
@@ -21,7 +21,7 @@ def parse_transaction(tran):
     return {
         'date': datetime.datetime.strptime(tran['Date'], '%m/%d/%Y').date(),
         'description': tran['Description'],
-        'account': tran['Account Name'],
+        'account': overrides.get(tran['Account Name'], tran['Account Name']),
         'amount': parse_amount(tran['Amount']) * amount_multiplier,
         'notes': tran['Notes'],
         'supplement': [
@@ -60,5 +60,5 @@ def filter_pending_trans(trans_list):
     return trans_list[critical_point:]
 
 
-def get_transactions(mint_file):
-    return filter_pending_trans(get_data(mint_file))
+def get_transactions(mint_file, overrides):
+    return filter_pending_trans(get_data(mint_file, overrides))
