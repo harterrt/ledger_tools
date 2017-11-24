@@ -162,4 +162,4 @@ def test_naive_bayes(runner, monkeypatch, nt):
                                'b' + '\n' + KB_INTERRUPT,
                                runner, monkeypatch)
 
-    assert cat_files.ledger_trans[0]['category'] == 'CREDIT CARD'
+    assert cat_files.ledger_trans[0]['category'] == 'Expenses:Utilities:Gas'
