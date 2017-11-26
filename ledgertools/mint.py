@@ -5,6 +5,9 @@ import datetime
 
 
 settings = {
+    'MINT_ACCOUNT_OVERRIDES': {
+        'CREDIT CARD': 'Liabilities:CreditCard',
+    }
 }
 
 
@@ -23,6 +26,9 @@ def parse_transaction(tran):
 
     # Account overrides - converts Mint's account names to ledger names
     overrides = settings.get('MINT_ACCOUNT_OVERRIDES', {})
+    print('-+'*80)
+    print(overrides)
+    print('-+'*80)
 
     # Build incomplete transaction and return
     return {

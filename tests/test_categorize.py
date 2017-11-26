@@ -47,7 +47,7 @@ def pickle_dump(path, obj):
 
 
 def run_categorize(new_transactions, ledger_path, user_input, runner,
-                   monkeypatch, settings = ''):
+                   monkeypatch, settings = None):
     # Generic noop for mocking out curses
     def noop(*a):
         pass
@@ -71,6 +71,13 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
     monkeypatch.setattr(cli.cat.pick.curses, 'curs_set', noop)
     monkeypatch.setattr(cli.cat.pick.curses, 'init_pair', noop)
 
+    # Load the settings data to be used in the isolated filesystem
+    if settings:
+        with open(settings) as infile:
+            settings_text = infile.read()
+    else:
+        settings_text = ""
+
     # Load the ledger data to be used in the isolated filesystem
     with open(ledger_path) as infile:
         ledger_text = infile.read()
@@ -88,7 +95,7 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
             tmpfile.write(ledger_text)
 
         with open(settings_path, 'w') as tmpfile:
-            tmpfile.write(settings)
+            tmpfile.write(settings_text)
 
         # Run the categorization
         runner.invoke(cli.categorize, [
