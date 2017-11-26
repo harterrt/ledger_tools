@@ -1,9 +1,12 @@
 import click
 import pickle
+import os
 from importlib.machinery import SourceFileLoader
 from . import data_actions
 from . import categorize as cat
 
+
+settings_path = os.path.expanduser('~/.config/ledger_tools/settings.py')
 
 def get_settings_from_module(module):
     '''https://github.com/getpelican/pelican/blob/master/pelican/settings.py#L212'''
@@ -19,20 +22,19 @@ def get_settings_from_module(module):
     return settings
 
 @click.group()
-@click.option('--config', help='Path to ledger config file.',
+@click.option('--settings', help='Path to ledger settings file.',
               type=click.Path(exists=True),
-              default='~/.config/ledger_tools/config')
-@click.pass_context
-def cli(ctx, config_path):
+              default=settings_path)
+def cli(config_path):
     try:
-        module = SourceFileLoader('lt_config', config_path).load_module())
+        module = SourceFileLoader('lt_config', config_path).load_module()
     except e:
         module = None
         click.echo(
             "Couldn't load config file %s: %s".format(config_path, e.msg)
         )
 
-    ctx.obj['config'] = get_settings_from_module(module)
+    data_actions.mint.settings.update(get_settings_from_module(module))
 
 
 @cli.command()
@@ -51,10 +53,8 @@ def pull_mint():
               type=click.Path(exists=True), required=True)
 @click.option('--out', help='Path to save the new tranasactions.',
               type=click.Path(), required=True)
-@click.pass_context
-def dump_new_trans(ctx, mint, ledger, out):
-    overrides = ctx.obj.get('MINT_ACCOUNT_OVERRIDES', {})
-    new = data_actions.new_trans_from_path(mint, ledger, overrides)
+def dump_new_trans(mint, ledger, out):
+    new = data_actions.new_trans_from_path(mint, ledger)
 
     with open(out, 'wb') as outfile:
         pickle.dump(new, outfile)

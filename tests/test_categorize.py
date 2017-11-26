@@ -47,7 +47,7 @@ def pickle_dump(path, obj):
 
 
 def run_categorize(new_transactions, ledger_path, user_input, runner,
-                   monkeypatch):
+                   monkeypatch, settings = ''):
     # Generic noop for mocking out curses
     def noop(*a):
         pass
@@ -79,13 +79,21 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
         new_trans_path = 'new_trans.pickle'
         existing_ledger_path = 'existing.ledger'
         new_ledger_path = 'new_trans.ledger'
+        settings_path = 'settings.py'
 
         # Save new trans and ledger file to temp filesystem
         pickle_dump(new_trans_path, new_transactions)
+
         with open(existing_ledger_path, 'w') as tmpfile:
             tmpfile.write(ledger_text)
 
+        with open(settings_path, 'w') as tmpfile:
+            tmpfile.write(settings)
+
+        # Run the categorization
         runner.invoke(cli.categorize, [
+            '--settings',
+            settings_path,
             '--new',
             new_trans_path,
             '--ledger',
