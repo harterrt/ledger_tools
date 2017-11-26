@@ -21,20 +21,28 @@ def get_settings_from_module(module):
 
     return settings
 
-@click.group()
-@click.option('--settings', help='Path to ledger settings file.',
-              type=click.Path(exists=True),
-              default=settings_path)
-def cli(config_path):
-    try:
-        module = SourceFileLoader('lt_config', config_path).load_module()
-    except e:
-        module = None
-        click.echo(
-            "Couldn't load config file %s: %s".format(config_path, e.msg)
-        )
 
-    data_actions.mint.settings.update(get_settings_from_module(module))
+def settings_option(func):
+    def callback(ctx, param, settings_path):
+        try:
+            module = SourceFileLoader('lt_config', settings_path).load_module()
+        except FileNotFoundError as e:
+            module = None
+            click.echo(
+                "Couldn't load config file {}: {}".format(settings_path, e.strerror)
+            )
+
+        data_actions.mint.settings.update(get_settings_from_module(module))
+
+    return click.option('--settings', help='Path to ledger settings file.',
+                        type=click.Path(), callback=callback,
+                        default=settings_path)(func)
+
+    return set_settings
+
+@click.group()
+def cli():
+    pass
 
 
 @cli.command()
@@ -53,7 +61,8 @@ def pull_mint():
               type=click.Path(exists=True), required=True)
 @click.option('--out', help='Path to save the new tranasactions.',
               type=click.Path(), required=True)
-def dump_new_trans(mint, ledger, out):
+@settings_option
+def dump_new_trans(mint, ledger, out, settings):
     new = data_actions.new_trans_from_path(mint, ledger)
 
     with open(out, 'wb') as outfile:
@@ -67,7 +76,8 @@ def dump_new_trans(mint, ledger, out):
               help='Path to save resulting ledger transactions')
 @click.option('--out',
               help='Path to save resulting ledger transactions')
-def categorize(new, ledger, out):
+@settings_option
+def categorize(new, ledger, out, settings):
     cat.run_categorization(new, ledger, out)
 
 

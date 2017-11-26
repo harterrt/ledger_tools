@@ -92,8 +92,6 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
 
         # Run the categorization
         runner.invoke(cli.categorize, [
-            '--settings',
-            settings_path,
             '--new',
             new_trans_path,
             '--ledger',
