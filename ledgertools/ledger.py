@@ -6,7 +6,11 @@ import csv
 
 
 def ledger_to_csv(path):
-    return check_output(['ledger', '-f', path, 'csv'])
+    with open(path) as infile:
+        return check_output(
+            ['docker', 'run', '-i', 'noazark/ledger', 'csv'],
+            stdin=infile
+        )
 
 
 def get_transactions(ledger_path):
