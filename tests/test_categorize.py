@@ -72,7 +72,6 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
     monkeypatch.setattr(cli.cat.pick.curses, 'curs_set', noop)
     monkeypatch.setattr(cli.cat.pick.curses, 'init_pair', noop)
 
-    print("first" + os.getcwd())
     with get_iso_filesystem([ledger_path], runner):
         new_trans_path = 'new_trans.pickle'
         new_ledger_path = 'new_trans.ledger'

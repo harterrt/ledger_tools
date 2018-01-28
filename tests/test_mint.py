@@ -3,6 +3,7 @@ import datetime
 from ledgertools import mint
 from decimal import Decimal
 from .test_categorize import run_categorize
+from .utils import runner get_iso_filesystem
 
 
 test_mint_data = 'tests/data/mint_transactions_example.csv'
@@ -62,14 +63,16 @@ def test_parse_refund():
     assert actual == expected
 
 
-# def test_account_override():
-#     cat_files = run_dump(new_transactions,
-# 			 'tests/data/categorize.ledger',
-# 			 runner, monkeypatch, settings='tests/data/override.py')
-# 
-#     run_categorize(new, ledger, input, runner, monkeypatch, settings)
-# 
-#     assert actual == expected
+def test_account_override():
+    args = []
+    files = []
+    with get_iso_filesystem([files], runner):
+        outfile = 'tmp.pickle'
+        runner.invoke(cli.dump_new_trans, [
+            args + ['--out', outfile]
+        ])
+
+    assert actual == expected
 
 
 def test_get_data():
