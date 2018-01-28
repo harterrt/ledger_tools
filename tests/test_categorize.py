@@ -10,6 +10,7 @@ from ledgertools import cli
 from ledgertools import ledger
 from ledgertools.categorize import to_ledger_format
 from .data import new_transactions
+from .utils import runner, get_iso_filesystem
 
 
 KB_INTERRUPT = '\x03'
@@ -47,7 +48,7 @@ def pickle_dump(path, obj):
 
 
 def run_categorize(new_transactions, ledger_path, user_input, runner,
-                   monkeypatch, settings = None):
+                   monkeypatch):
     # Generic noop for mocking out curses
     def noop(*a):
         pass
@@ -71,38 +72,20 @@ def run_categorize(new_transactions, ledger_path, user_input, runner,
     monkeypatch.setattr(cli.cat.pick.curses, 'curs_set', noop)
     monkeypatch.setattr(cli.cat.pick.curses, 'init_pair', noop)
 
-    # Load the settings data to be used in the isolated filesystem
-    if settings:
-        with open(settings) as infile:
-            settings_text = infile.read()
-    else:
-        settings_text = ""
-
-    # Load the ledger data to be used in the isolated filesystem
-    with open(ledger_path) as infile:
-        ledger_text = infile.read()
-
-    with runner.isolated_filesystem():
+    print("first" + os.getcwd())
+    with get_iso_filesystem([ledger_path], runner):
         new_trans_path = 'new_trans.pickle'
-        existing_ledger_path = 'existing.ledger'
         new_ledger_path = 'new_trans.ledger'
-        settings_path = 'settings.py'
 
         # Save new trans and ledger file to temp filesystem
         pickle_dump(new_trans_path, new_transactions)
-
-        with open(existing_ledger_path, 'w') as tmpfile:
-            tmpfile.write(ledger_text)
-
-        with open(settings_path, 'w') as tmpfile:
-            tmpfile.write(settings_text)
 
         # Run the categorization
         runner.invoke(cli.categorize, [
             '--new',
             new_trans_path,
             '--ledger',
-            existing_ledger_path,
+            ledger_path,
             '--out',
             new_ledger_path,
         ], input=user_input, catch_exceptions=False)
