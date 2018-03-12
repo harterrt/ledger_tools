@@ -1,13 +1,6 @@
-import pytest
 from ledgertools import data_actions, mint, ledger
 
 test_mint_data = 'tests/data/mint_transactions_example.csv'
-
-@pytest.fixture()
-def nt():
-    from .data import new_transactions
-    print(new_transactions.new_transactions)
-    return new_transactions
 
 
 def test_find_new(nt):

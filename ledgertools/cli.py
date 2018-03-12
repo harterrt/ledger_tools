@@ -1,6 +1,5 @@
 import click
 import pickle
-import os
 from importlib.machinery import SourceFileLoader
 from . import config
 from . import data_actions
@@ -14,7 +13,8 @@ def settings_option(func):
         except FileNotFoundError as e:
             module = None
             click.echo(
-                "Couldn't load config file {}: {}".format(settings_path, e.strerror)
+                "Couldn't load config file {}: {}"
+                .format(settings_path, e.strerror)
             )
 
         return config.get_settings_from_module(module)

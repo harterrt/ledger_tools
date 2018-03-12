@@ -3,14 +3,13 @@ import os.path
 import pickle
 import click
 from click import _termui_impl
-from click.testing import CliRunner
 from collections import namedtuple
 
 from ledgertools import cli
 from ledgertools import ledger
 from ledgertools.categorize import to_ledger_format
 from .data import new_transactions
-from .utils import runner, get_iso_filesystem
+from .conftest import get_iso_filesystem
 
 
 KB_INTERRUPT = '\x03'
@@ -20,11 +19,6 @@ ESCAPE = '\x1b'
 @pytest.fixture
 def nt():
     return new_transactions
-
-
-@pytest.fixture
-def runner():
-    return CliRunner()
 
 
 def ledger_load(path):

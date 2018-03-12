@@ -2,7 +2,6 @@ import pytest
 import datetime
 from ledgertools import mint
 from decimal import Decimal
-from .test_categorize import run_categorize
 from .test_data_actions import test_mint_data
 
 
