@@ -2,11 +2,8 @@ from click.testing import CliRunner
 import pytest
 import pickle
 from ledgertools import cli
-from .test_mint import test_mint_data
 from .utils import runner, get_iso_filesystem
-# Make this a fixture instead
-from .data import new_transactions as nt
-
+from .test_data_actions import nt, test_mint_data
 
 
 def test_cli(runner):
@@ -16,7 +13,7 @@ def test_cli(runner):
     assert "mint.com" in result.output
 
 
-def test_account_override(runner):
+def test_account_override(runner, nt):
     files = {
         'mint': test_mint_data,
         'ledger': 'tests/data/example.ledger',
@@ -34,6 +31,6 @@ def test_account_override(runner):
         with open(outfile, 'rb') as f:
             actual = pickle.load(f)
 
-    expected = nt.new_transactions.copy()
-    expected[0]['account'] = 'Liabilities:CreditCard'
-    assert expected == actual
+    expected = nt.new_transactions[0].copy()
+    expected['account'] = 'Liabilities:CreditCard'
+    assert [expected] == actual
