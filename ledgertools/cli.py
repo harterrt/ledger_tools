@@ -33,13 +33,12 @@ def settings_option(func):
                 "Couldn't load config file {}: {}".format(settings_path, e.strerror)
             )
 
-        data_actions.mint.settings.update(get_settings_from_module(module))
+        return get_settings_from_module(module)
 
     return click.option('--settings', help='Path to ledger settings file.',
                         type=click.Path(), callback=callback,
                         default=settings_path)(func)
 
-    return set_settings
 
 @click.group()
 def cli():
@@ -64,7 +63,8 @@ def pull_mint():
               type=click.Path(), required=True)
 @settings_option
 def dump_new_trans(mint, ledger, out, settings):
-    new = data_actions.new_trans_from_path(mint, ledger)
+    print(settings)
+    new = data_actions.new_trans_from_path(mint, ledger, config=settings)
 
     with open(out, 'wb') as outfile:
         pickle.dump(new, outfile)

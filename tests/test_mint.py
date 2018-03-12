@@ -3,11 +3,9 @@ import datetime
 from ledgertools import mint
 from decimal import Decimal
 from .test_categorize import run_categorize
-from .utils import runner get_iso_filesystem
 
 
 test_mint_data = 'tests/data/mint_transactions_example.csv'
-
 
 def test_parse_tran():
     actual = mint.parse_transaction({
@@ -59,18 +57,6 @@ def test_parse_refund():
             ('Original Description', 'ATM REFUND')
         ]
     }
-
-    assert actual == expected
-
-
-def test_account_override():
-    args = []
-    files = []
-    with get_iso_filesystem([files], runner):
-        outfile = 'tmp.pickle'
-        runner.invoke(cli.dump_new_trans, [
-            args + ['--out', outfile]
-        ])
 
     assert actual == expected
 

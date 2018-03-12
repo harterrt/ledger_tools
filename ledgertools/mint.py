@@ -4,28 +4,21 @@ import logging
 import datetime
 
 
-settings = {
-    'MINT_ACCOUNT_OVERRIDES': {
-        'CREDIT CARD': 'Liabilities:CreditCard',
-    }
-}
-
-
-def get_data(path):
+def get_data(path, config={}):
     with open(path, 'r') as infile:
-        trans = [parse_transaction(tt) for tt in DictReader(infile)]
+        trans = [parse_transaction(tt, config=config) for tt in DictReader(infile)]
 
     return trans
 
 
-def parse_transaction(tran):
+def parse_transaction(tran, config={}):
     # Convert raw transaction `tran` into an incomplete transaction
 
     # Amounts decrease asset accounts unless specified as a credit.
     amount_multiplier = 1 if tran['Transaction Type'] == 'credit' else -1
 
     # Account overrides - converts Mint's account names to ledger names
-    overrides = settings.get('MINT_ACCOUNT_OVERRIDES', {})
+    overrides = config.get('MINT_ACCOUNT_OVERRIDES', {})
     print('-+'*80)
     print(overrides)
     print('-+'*80)
@@ -73,5 +66,5 @@ def filter_pending_trans(trans_list):
     return trans_list[critical_point:]
 
 
-def get_transactions(mint_file):
-    return filter_pending_trans(get_data(mint_file))
+def get_transactions(mint_file, config={}):
+    return filter_pending_trans(get_data(mint_file, config=config))
