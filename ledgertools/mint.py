@@ -1,10 +1,11 @@
 from csv import DictReader
 from .utils import parse_amount
+from . import config
 import logging
 import datetime
 
 
-def get_data(path='~/Private/account_data/mint_transactions.csv'):
+def get_data(path):
     with open(path, 'r') as infile:
         trans = [parse_transaction(tt) for tt in DictReader(infile)]
 
@@ -17,11 +18,14 @@ def parse_transaction(tran):
     # Amounts decrease asset accounts unless specified as a credit.
     amount_multiplier = 1 if tran['Transaction Type'] == 'credit' else -1
 
+    # Account overrides - converts Mint's account names to ledger names
+    overrides = config.settings.get('MINT_ACCOUNT_OVERRIDES', {})
+
     # Build incomplete transaction and return
     return {
         'date': datetime.datetime.strptime(tran['Date'], '%m/%d/%Y').date(),
         'description': tran['Description'],
-        'account': tran['Account Name'],
+        'account': overrides.get(tran['Account Name'], tran['Account Name']),
         'amount': parse_amount(tran['Amount']) * amount_multiplier,
         'notes': tran['Notes'],
         'supplement': [

@@ -2,9 +2,7 @@ import pytest
 import datetime
 from ledgertools import mint
 from decimal import Decimal
-
-
-test_mint_data = 'tests/data/mint_transactions_example.csv'
+from .test_data_actions import test_mint_data
 
 
 def test_parse_tran():
