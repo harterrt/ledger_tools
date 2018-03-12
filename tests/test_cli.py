@@ -4,6 +4,7 @@ import pickle
 from ledgertools import cli
 from .utils import runner, get_iso_filesystem
 from .test_data_actions import nt, test_mint_data
+import traceback as tb
 
 
 def test_cli(runner):
@@ -26,7 +27,7 @@ def test_account_override(runner, nt):
             '--mint', files['mint'],
             '--ledger', files['ledger'],
             '--settings', files['settings'],
-        ])
+        ], catch_exceptions=False)
         print(results.output)
         with open(outfile, 'rb') as f:
             actual = pickle.load(f)

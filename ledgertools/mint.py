@@ -1,24 +1,25 @@
 from csv import DictReader
 from .utils import parse_amount
+from . import config
 import logging
 import datetime
 
 
-def get_data(path, config={}):
+def get_data(path):
     with open(path, 'r') as infile:
-        trans = [parse_transaction(tt, config=config) for tt in DictReader(infile)]
+        trans = [parse_transaction(tt) for tt in DictReader(infile)]
 
     return trans
 
 
-def parse_transaction(tran, config={}):
+def parse_transaction(tran):
     # Convert raw transaction `tran` into an incomplete transaction
 
     # Amounts decrease asset accounts unless specified as a credit.
     amount_multiplier = 1 if tran['Transaction Type'] == 'credit' else -1
 
     # Account overrides - converts Mint's account names to ledger names
-    overrides = config.get('MINT_ACCOUNT_OVERRIDES', {})
+    overrides = config.settings.get('MINT_ACCOUNT_OVERRIDES', {})
     print('-+'*80)
     print(overrides)
     print('-+'*80)
@@ -66,5 +67,5 @@ def filter_pending_trans(trans_list):
     return trans_list[critical_point:]
 
 
-def get_transactions(mint_file, config={}):
-    return filter_pending_trans(get_data(mint_file, config=config))
+def get_transactions(mint_file):
+    return filter_pending_trans(get_data(mint_file))

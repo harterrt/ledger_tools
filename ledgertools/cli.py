@@ -1,26 +1,10 @@
 import click
-import inspect
 import pickle
 import os
 from importlib.machinery import SourceFileLoader
+from . import config
 from . import data_actions
 from . import categorize as cat
-
-
-settings_path = os.path.expanduser('~/.config/ledger_tools/settings.py')
-
-def get_settings_from_module(module):
-    '''https://github.com/getpelican/pelican/blob/master/pelican/settings.py#L212'''
-
-    settings = {
-        'MINT_ACCOUNT_OVERRIDES': {}
-    }
-    if module is not None:
-        settings.update(
-                (k, v) for k, v in inspect.getmembers(module) if k.isupper()
-        )
-
-    return settings
 
 
 def settings_option(func):
@@ -33,11 +17,11 @@ def settings_option(func):
                 "Couldn't load config file {}: {}".format(settings_path, e.strerror)
             )
 
-        return get_settings_from_module(module)
+        return config.get_settings_from_module(module)
 
     return click.option('--settings', help='Path to ledger settings file.',
                         type=click.Path(), callback=callback,
-                        default=settings_path)(func)
+                        default=config.settings_path)(func)
 
 
 @click.group()
@@ -63,8 +47,10 @@ def pull_mint():
               type=click.Path(), required=True)
 @settings_option
 def dump_new_trans(mint, ledger, out, settings):
+    print("Test")
     print(settings)
-    new = data_actions.new_trans_from_path(mint, ledger, config=settings)
+    print(config.settings)
+    new = data_actions.new_trans_from_path(mint, ledger)
 
     with open(out, 'wb') as outfile:
         pickle.dump(new, outfile)
