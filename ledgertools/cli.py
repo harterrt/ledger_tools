@@ -47,9 +47,6 @@ def pull_mint():
               type=click.Path(), required=True)
 @settings_option
 def dump_new_trans(mint, ledger, out, settings):
-    print("Test")
-    print(settings)
-    print(config.settings)
     new = data_actions.new_trans_from_path(mint, ledger)
 
     with open(out, 'wb') as outfile:

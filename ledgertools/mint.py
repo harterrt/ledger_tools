@@ -20,9 +20,6 @@ def parse_transaction(tran):
 
     # Account overrides - converts Mint's account names to ledger names
     overrides = config.settings.get('MINT_ACCOUNT_OVERRIDES', {})
-    print('-+'*80)
-    print(overrides)
-    print('-+'*80)
 
     # Build incomplete transaction and return
     return {
