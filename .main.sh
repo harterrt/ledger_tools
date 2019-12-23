@@ -2,7 +2,7 @@ set -e
 
 # Download new transactions
 rm -f ~/Downloads/transactions.csv
-firefox-trunk \
+firefox \
     'https://wwws.mint.com/transactionDownload.event?queryNew=&offset=0&filterType=cash&comparableType=4'
 sleep 3
 

@@ -10,6 +10,21 @@ import pickle
 import textwrap
 from . import ledger
 
+CATEGORIES = {
+    'Expenses:Discretionary': 'd',
+    'Expenses:Food:Eating Out': 'e',
+    'Expenses:Food:Groceries': 'g',
+    'Expenses:Incedentals': 'n',
+    'Expenses:Incedentals:Household': 'h',
+    'Expenses:Discretionary:Recurring': 'r',
+    'Expenses:Auto': 'c',
+    'Liabilities:Mortgage': 'm',
+    'Expenses:Discretionary:Amazon': 'a',
+    'Expenses:Stipend': 's',
+    'Income': 'i',
+    'Ignore:Transfer': 't',
+}
+
 
 def to_ledger_format(mint_tran, category):
     return textwrap.dedent("""\
@@ -18,10 +33,12 @@ def to_ledger_format(mint_tran, category):
             {new_category}  {new_amount}
             {account}  {existing_amount}
 
-        """).format(new_category=category,
-                    new_amount=dump_amount(-1 * mint_tran['amount']),
-                    existing_amount=dump_amount(mint_tran['amount']),
-                    **mint_tran)
+        """).format(
+            new_category=category,
+            new_amount=dump_amount(-1 * mint_tran['amount']),
+            existing_amount=dump_amount(mint_tran['amount']),
+            **mint_tran
+        )
 
 
 def run_categorization(trans_path, ledger_path, out_path):
@@ -57,15 +74,6 @@ def run_categorization(trans_path, ledger_path, out_path):
             success = False
 
 
-def get_category_frequencies(ledger_trans):
-    most_common = seq(ledger_trans)\
-        .map(lambda x: Counter([x['category']]))\
-        .reduce(lambda x, y: x + y)\
-        .most_common()
-
-    return [key for key, value in most_common]
-
-
 def merge_dicts(*dict_args):
     """
     Given any number of dicts, shallow copy and merge into a new dict,
@@ -93,29 +101,27 @@ def categorize(transaction, ledger_trans, progress):
         Progress    : {current} / {total}
         """).format(**display_params)
 
-    categories = get_category_frequencies(ledger_trans)
-
-    picker = pick.Picker(categories, title)
+    picker = pick.Picker(
+        CATEGORIES.keys(),
+        title,
+        options_map_func = format_category
+    )
 
     # Register custom handlers
-    picker.register_custom_handler(ord('f'), pick_set(categories))
-    picker.register_custom_handler(ord('/'), pick_search)
-    picker.register_custom_handler(
-        ord('b'),
-        pick_bayes(ledger_trans, transaction)
-    )
+    # picker.register_custom_handler(ord('/'), pick_search)
+
+    for key, value in CATEGORIES.items():
+        picker.register_custom_handler(ord(value), choose_value(key))
 
     return picker.start()
 
 
-def pick_set(categories):
-    def pick_handler(picker):
-        picker.options = categories
-        picker.draw()
-        return None
+def format_category(category):
+    return('[{0}] - {1}'.format(CATEGORIES[category], category))
 
-    return pick_handler
 
+def choose_value(value):
+    return(lambda picker: (value, -1))
 
 def pick_search(picker):
     exit_chars = [27, ord('\n')]  # 27 is escape
@@ -138,52 +144,8 @@ def fuzzy_order(options, search_string):
     def key_func(option):
         return -fuzz.partial_ratio(option.lower(), search_string.lower())
 
-    return seq(options) \
-        .sorted(key=key_func) \
-        .list()
-
-
-def pick_bayes(ledger_trans, tran):
-    def pick_handler(picker):
-        new_order, vectorizer, model = train(ledger_trans, tran)
-        picker.options = new_order
-        picker.draw()
-        return None
-
-    return pick_handler
-
-
-def train(ledger_trans, tran):
-    vectorizer = TfidfVectorizer()
-
-    interesting_trans = (
-        seq(ledger_trans)
-        .filter(lambda x: x['category'] != tran['account'])
-    )
-
-    X = vectorizer.fit_transform(
-        interesting_trans
-        .map(lambda x: x['payee'])
-    )
-
-    y = np.array(
-        interesting_trans
-        .map(lambda x: x['category'])
+    return (
+        seq(options)
+        .sorted(key=key_func)
         .list()
     )
-
-    model = MultinomialNB().fit(X, y)
-
-    classes = model.classes_
-
-    probs = model.predict_proba(
-        vectorizer.transform([tran['description']])
-    ).tolist()[0]
-
-    ordered_classes = [
-        acct
-        for (prob, acct)
-        in sorted(zip(probs, classes), reverse=True)
-    ]
-
-    return ordered_classes, vectorizer, model
