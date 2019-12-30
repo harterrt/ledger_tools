@@ -12,10 +12,12 @@ from . import ledger
 
 CATEGORIES = {
     'Expenses:Discretionary': 'd',
+    'Expenses:Discretionary:Vacations': 'V',
     'Expenses:Food:Eating Out': 'e',
     'Expenses:Food:Groceries': 'g',
     'Expenses:Incedentals': 'n',
     'Expenses:Incedentals:Household': 'h',
+    'Expenses:Incedentals:Household:Utilities': 'u',
     'Expenses:Discretionary:Recurring': 'r',
     'Expenses:Auto': 'c',
     'Liabilities:Mortgage': 'm',
@@ -23,6 +25,10 @@ CATEGORIES = {
     'Expenses:Stipend': 's',
     'Income': 'i',
     'Ignore:Transfer': 't',
+    'Receivables': 'b',
+    'Assets:Vanguard': 'v',
+    'Unknown': '?',
+    'Expenses:Discretionary:Charitable': 'C',
 }
 
 
@@ -45,20 +51,27 @@ def run_categorization(trans_path, ledger_path, out_path):
     success = True
 
     with open(trans_path, 'rb') as infile:
-        trans = pickle.load(infile)
+        trans = sorted(pickle.load(infile), key=lambda x: abs(x['amount']))
+
+    def value(trans):
+        return(
+            seq(trans)
+            .map(lambda x: abs(x['amount']))
+            .sum()
+        )
 
     total_trans = len(trans)
-
-    ledger_trans = ledger.get_transactions(ledger_path)
+    total_value = value(trans)
 
     while success:
         tran = trans.pop()
         result = categorize(
             tran,
-            ledger_trans,
             {
                 'current': total_trans - len(trans),
-                'total': total_trans
+                'total': total_trans,
+                'value': total_value - value(trans),
+                'total_value': total_value,
             }
         )[0]
 
@@ -86,9 +99,9 @@ def merge_dicts(*dict_args):
     return result
 
 
-def categorize(transaction, ledger_trans, progress):
+def categorize(transaction, progress):
     display_params = merge_dicts(transaction, progress)
-    # TODO: handle supplementary data
+
     title = textwrap.dedent("""\
         Transaction
         ===========
@@ -99,6 +112,7 @@ def categorize(transaction, ledger_trans, progress):
         Notes       : {notes}
         Supplement  : {supplement}
         Progress    : {current} / {total}
+        Value Prog  : {value:,.0f} / {total_value:,.0f}
         """).format(**display_params)
 
     picker = pick.Picker(

@@ -4,7 +4,7 @@ set -e
 rm -f ~/Downloads/transactions.csv
 firefox \
     'https://wwws.mint.com/transactionDownload.event?queryNew=&offset=0&filterType=cash&comparableType=4'
-sleep 3
+sleep 5
 
 # Refresh the canonical ledger file
 cd /home/harterrt/Private/account_data
